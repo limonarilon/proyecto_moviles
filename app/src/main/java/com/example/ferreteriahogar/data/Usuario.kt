@@ -1,4 +1,4 @@
-package com.example.ferreteriahogar.data.model.Usuario
+package com.example.ferreteriahogar.data
 
 data class Usuario(
     val nombre: String,

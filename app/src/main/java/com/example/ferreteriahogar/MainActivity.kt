@@ -5,20 +5,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.ferreteriahogar.ui.Routes
+
+
 import com.example.ferreteriahogar.ui.screens.*
 import com.example.ferreteriahogar.ui.theme.FerreteriaHogarTheme
+import com.example.ferreteriahogar.ui.viewmodels.ProductoViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +25,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
+            val productoViewModel: ProductoViewModel = viewModel()
+
             NavHost(navController = navController, startDestination = Routes.Login, builder = {
                 composable(Routes.Login,){
                     Scaffold(Modifier.fillMaxSize()) { innerPadding ->
@@ -56,6 +57,12 @@ class MainActivity : ComponentActivity() {
                     Scaffold (Modifier.fillMaxSize()){ innerPadding ->
                         MenuProductos(paddingValues = innerPadding, navController)
                     }
+                }
+                composable(Routes.ListaProductos) {
+                    ListaProductosScreen(navController, productoViewModel)
+                }
+                composable(Routes.FormularioProducto) {
+                    FormProductoScreen(navController, productoViewModel)
                 }
             })
         }

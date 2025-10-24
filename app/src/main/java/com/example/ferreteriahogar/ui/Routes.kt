@@ -12,5 +12,7 @@ object Routes {
 
     var MenuProducto = "menuProducto"
 
+    var ListaProductos = "listaproductos"
+    var FormularioProducto = "formularioproducto"
 
 }
