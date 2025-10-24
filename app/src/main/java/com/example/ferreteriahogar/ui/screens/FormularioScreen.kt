@@ -36,6 +36,7 @@ fun FormularioScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Spacer(modifier = Modifier.height(16.dp))
         Text("Registro nuevo usuario",
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold)

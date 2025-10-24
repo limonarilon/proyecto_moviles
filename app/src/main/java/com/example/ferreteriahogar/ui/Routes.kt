@@ -7,4 +7,10 @@ object Routes {
     var Mision = "mision"
 
     var Register = "register"
+
+    var MenuUsuario = "menuUsuario"
+
+    var MenuProducto = "menuProducto"
+
+
 }
