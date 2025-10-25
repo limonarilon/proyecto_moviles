@@ -1,25 +1,52 @@
 package com.example.ecomarketmovil.ui.viewmodels
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.ecomarketmovil.data.Producto
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 
-class ProductoViewModel: ViewModel() {
-    private val _productos = mutableStateListOf<Producto>()// Lista mutable de productos
+class ProductoViewModel : ViewModel() {
 
-    // Estado para exponer los mensajes de error a la UI
+    // --- Estados Internos ---
+    private val _productos = MutableStateFlow<List<Producto>>(emptyList())
     private val _mensajeError = MutableStateFlow<String?>(null)
-    val mensajeError = _mensajeError.asStateFlow()
-
-    // Estado para indicar a la UI que la operación fue exitosa y debe navegar
     private val _navegacionExitosa = MutableStateFlow(false)
-    val navegacionExitosa = _navegacionExitosa.asStateFlow()
+    private val _textoBusqueda = MutableStateFlow("")
 
-    val productos: List<Producto> get() = _productos
+    // --- Estados Públicos para la UI ---
+    val mensajeError = _mensajeError.asStateFlow()
+    val navegacionExitosa = _navegacionExitosa.asStateFlow()
+    val textoBusqueda = _textoBusqueda.asStateFlow()
+
+    // Flow que combina la lista de productos y el texto de búsqueda para producir la lista filtrada
+    val productosFiltrados = _textoBusqueda
+        .combine(_productos) { texto, productos ->
+            if (texto.isBlank()) {
+                productos
+            } else {
+                productos.filter {
+                    it.nombre.contains(texto, ignoreCase = true)
+                }
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = _productos.value
+        )
 
     private var nextId = 1
+
+    // --- Lógica de Negocio ---
+
+    fun onTextoBusquedaChange(texto: String) {
+        _textoBusqueda.value = texto
+    }
 
     fun validarYGuardar(id: Int, nombre: String, precioStr: String, stockStr: String) {
         _mensajeError.value = null // Limpiar error anterior
@@ -54,31 +81,34 @@ class ProductoViewModel: ViewModel() {
         _navegacionExitosa.value = false
     }
 
-    // Función pública para cargar datos en Previews
     fun cargarDatosDeEjemplo() {
-        if (productos.isNotEmpty()) return // Evita duplicar datos
-        agregar("Jugo de naranja", 1500, 10)
-        agregar("Arroz Integral", 1990, 20)
-        agregar("Mix frutos secos", 2450, 15)
+        if (_productos.value.isNotEmpty()) return // Evita duplicar datos
+        val listaEjemplo = listOf(
+            Producto(nextId++, "Jugo de naranja", 1500, 10),
+            Producto(nextId++, "Arroz Integral", 1990, 20),
+            Producto(nextId++, "Mix frutos secos", 2450, 15)
+        )
+        _productos.value = listaEjemplo
     }
 
     private fun agregar(nombre: String, precio: Int, stock: Int) {
         val nuevo = Producto(nextId++, nombre, precio, stock)
-        _productos.add(nuevo)
+        _productos.update { it + nuevo }
     }
 
     fun eliminar(producto: Producto) {
-        _productos.remove(producto)
+        _productos.update { it - producto }
     }
 
     private fun actualizar(id: Int, nombre: String, precio: Int, stock: Int) {
-        val index = _productos.indexOfFirst { it.id == id }
-        if (index != -1) {
-            _productos[index] = _productos[index].copy(nombre = nombre, precio = precio, stock = stock)
+        _productos.update { listaActual ->
+            listaActual.map {
+                if (it.id == id) it.copy(nombre = nombre, precio = precio, stock = stock) else it
+            }
         }
     }
 
     fun obtenerPorId(id: Int): Producto? {
-        return _productos.find { it.id == id }
+        return _productos.value.find { it.id == id }
     }
 }

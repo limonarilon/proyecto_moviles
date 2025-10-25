@@ -129,7 +129,7 @@ fun MenuProducto(paddingValues: PaddingValues,navController : NavController){
 
                 Spacer(Modifier.height(10.dp))
 
-                
+
 
                 Button(
                     onClick = {
