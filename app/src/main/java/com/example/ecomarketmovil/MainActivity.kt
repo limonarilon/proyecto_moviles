@@ -46,6 +46,11 @@ class MainActivity : ComponentActivity() {
                         Mision(paddingValues = innerPadding, navController)
                     }
                 }
+                composable (Routes.Vision) {
+                    Scaffold(Modifier.fillMaxSize()) { innerPadding ->
+                        Vision(paddingValues = innerPadding, navController)
+                    }
+                }
                 composable( Routes.MenuUsuario){
                     Scaffold (Modifier.fillMaxSize()){ innerPadding ->
                         MenuUsuario(paddingValues = innerPadding, navController)

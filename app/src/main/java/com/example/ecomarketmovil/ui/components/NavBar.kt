@@ -49,6 +49,9 @@ fun NavBar(navController: NavController){
                         when (opcion) {
                         "Mision" -> navController.navigate(Routes.Mision)
                         }
+                        when (opcion) {
+                        "Vision" -> navController.navigate(Routes.Vision)
+                        }
                     }
                 ) {
                     isMenuOpened=false

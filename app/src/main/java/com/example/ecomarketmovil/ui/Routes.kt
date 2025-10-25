@@ -6,6 +6,8 @@ object Routes {
 
     var Mision = "mision"
 
+    var Vision = "vision"
+
     var Register = "register"
 
     var MenuUsuario = "menuUsuario"

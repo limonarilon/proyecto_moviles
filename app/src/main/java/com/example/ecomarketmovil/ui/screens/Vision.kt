@@ -1,5 +1,6 @@
 package com.example.ecomarketmovil.ui.screens
 
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.ecomarketmovil.ui.components.NavBar
 
 @Composable
-fun Mision(paddingValues: PaddingValues, navController: NavController){
+fun Vision(paddingValues: PaddingValues, navController: NavController){
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -54,19 +55,19 @@ fun Mision(paddingValues: PaddingValues, navController: NavController){
 
             Spacer(Modifier.height(90.dp))
 
-            Text(text = "MISIÓN",
-                 style = TextStyle(
-                     fontSize = 34.sp,
-                     fontWeight = FontWeight.Bold,
-                     shadow = Shadow(
-                         color = Color.Gray,
-                         offset = Offset(1f, 1f),
-                         blurRadius = 2f
-                     )
-                 )
+            Text(text = "VISIÓN",
+                style = TextStyle(
+                    fontSize = 34.sp,
+                    fontWeight = FontWeight.Bold,
+                    shadow = Shadow(
+                        color = Color.Gray,
+                        offset = Offset(1f, 1f),
+                        blurRadius = 2f
+                    )
+                )
             )
 
-            Text(text = "En EcoMarket, nuestra misión es promover un estilo de vida saludable y responsable con el planeta, ofreciendo productos orgánicos, naturales y sustentables de alta calidad. Buscamos conectar a los consumidores conscientes con productores comprometidos, fomentando el comercio justo y el consumo ético que contribuya al bienestar de las personas y del medioambiente.",
+            Text(text = "Ser la tienda en línea líder en productos ecológicos y sustentables, reconocida por inspirar una comunidad que valora el respeto por la naturaleza, el consumo responsable y la innovación verde. En EcoMarket, aspiramos a construir un futuro donde cada elección de compra sea una oportunidad para cuidar el planeta.",
                 style = TextStyle(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -81,7 +82,7 @@ fun Mision(paddingValues: PaddingValues, navController: NavController){
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewMision() {
+fun PreviewVision() {
     Mision(
         paddingValues = PaddingValues(),
         navController = rememberNavController()
