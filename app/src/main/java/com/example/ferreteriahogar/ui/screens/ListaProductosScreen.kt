@@ -60,6 +60,10 @@ fun ListaProductosScreen(navController: NavController, viewModel: ProductoViewMo
                                         text = "$${producto.precio}",
                                         style = MaterialTheme.typography.bodyMedium
                                     )
+                                    Text(
+                                        text = "Stock: ${producto.stock}",
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
                                 }
 
                                 Row {
@@ -99,9 +103,7 @@ fun ListaProductosScreen(navController: NavController, viewModel: ProductoViewMo
 fun PreviewListaProductos() {
     val navController = rememberNavController()
     val viewModel = ProductoViewModel().apply {
-        agregar("Jugo de naranja", 1500.0)
-        agregar("Arroz Integral", 1990.0)
-        agregar("Mix frutos secos", 2450.0)
+        cargarDatosDeEjemplo()
     }
     ListaProductosScreen(navController, viewModel)
 }

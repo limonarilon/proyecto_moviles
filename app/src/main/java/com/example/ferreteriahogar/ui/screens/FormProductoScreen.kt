@@ -1,9 +1,12 @@
 package com.example.ferreteriahogar.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -15,6 +18,11 @@ import com.example.ferreteriahogar.ui.viewmodels.ProductoViewModel
 fun FormProductoScreen(navController: NavController, viewModel: ProductoViewModel, id: Int) {
     var nombre by remember { mutableStateOf("") }
     var precio by remember { mutableStateOf("") }
+    var stock by remember { mutableStateOf("") }
+
+    // Recogemos los estados del ViewModel
+    val mensajeError by viewModel.mensajeError.collectAsState()
+    val navegacionExitosa by viewModel.navegacionExitosa.collectAsState()
 
     val producto: Producto? = if (id != -1) {
         viewModel.obtenerPorId(id)
@@ -22,11 +30,20 @@ fun FormProductoScreen(navController: NavController, viewModel: ProductoViewMode
         null
     }
 
+    // Si la operación es exitosa, navegamos hacia atrás
+    LaunchedEffect(navegacionExitosa) {
+        if (navegacionExitosa) {
+            navController.popBackStack()
+            viewModel.onNavegacionCompleta() // Resetea el estado para evitar re-navegación
+        }
+    }
+
     // Si encontramos un producto (estamos editando), llenamos los campos
     LaunchedEffect(producto) {
         if (producto != null) {
             nombre = producto.nombre
             precio = producto.precio.toString()
+            stock = producto.stock.toString()
         }
     }
 
@@ -68,21 +85,32 @@ fun FormProductoScreen(navController: NavController, viewModel: ProductoViewMode
                 value = precio,
                 onValueChange = { precio = it },
                 label = { Text("Precio") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = stock,
+                onValueChange = { stock = it },
+                label = { Text("Stock") },
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Muestra el mensaje de error si no es nulo
+            mensajeError?.let {
+                Text(
+                    text = it,
+                    color = Color.Red,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+
             Button(
                 onClick = {
-                    val precioDouble = precio.toDoubleOrNull() ?: 0.0
-                    if (id != -1) {
-                        // Actualizar producto existente
-                        viewModel.actualizar(id, nombre, precioDouble)
-                    } else {
-                        // Agregar nuevo producto
-                        viewModel.agregar(nombre, precioDouble)
-                    }
-                    navController.popBackStack() // Volver a la lista
+                    // Llama a la función de validación del ViewModel
+                    viewModel.validarYGuardar(id, nombre, precio, stock)
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
