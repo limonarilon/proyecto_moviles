@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.ferreteriahogar"
+    namespace = "com.example.ecomarketmovil"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.ferreteriahogar"
+        applicationId = "com.example.ecomarketmovil"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
