@@ -5,7 +5,10 @@ import androidx.lifecycle.ViewModel
 import com.example.ferreteriahogar.data.Producto
 
 class ProductoViewModel: ViewModel() {
-    private val _productos = mutableStateListOf<Producto>()
+    private val _productos = mutableStateListOf<Producto>()// Lista mutable de productos
+    //se usa el (_) por algo que se llama backing property solo el viewmodel puuede agregar
+    // o quitar elementos de esta lista en cambio productos es una lista de solo lectura
+
     val productos: List<Producto> get() = _productos
 
     private var nextId = 1

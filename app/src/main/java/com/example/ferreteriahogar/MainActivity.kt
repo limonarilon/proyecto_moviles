@@ -9,12 +9,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.ferreteriahogar.ui.Routes
-
-
 import com.example.ferreteriahogar.ui.screens.*
 import com.example.ferreteriahogar.ui.theme.FerreteriaHogarTheme
 import com.example.ferreteriahogar.ui.viewmodels.ProductoViewModel
@@ -55,14 +55,21 @@ class MainActivity : ComponentActivity() {
                 }
                 composable( Routes.MenuProducto){
                     Scaffold (Modifier.fillMaxSize()){ innerPadding ->
-                        MenuProductos(paddingValues = innerPadding, navController)
+                        MenuProducto(paddingValues = innerPadding, navController)
                     }
                 }
                 composable(Routes.ListaProductos) {
                     ListaProductosScreen(navController, productoViewModel)
                 }
-                composable(Routes.FormularioProducto) {
-                    FormProductoScreen(navController, productoViewModel)
+                composable(
+                    route = Routes.FormularioProducto + "/{id}",
+                    arguments = listOf(navArgument("id") { 
+                        type = NavType.IntType
+                        defaultValue = -1
+                    })
+                ) {
+                    val id = it.arguments?.getInt("id") ?: -1
+                    FormProductoScreen(navController, productoViewModel, id)
                 }
             })
         }

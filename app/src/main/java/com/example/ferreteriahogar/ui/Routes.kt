@@ -15,4 +15,5 @@ object Routes {
     var ListaProductos = "listaproductos"
     var FormularioProducto = "formularioproducto"
 
+    fun formularioProductoConId(id: Int) = "$FormularioProducto/$id"
 }

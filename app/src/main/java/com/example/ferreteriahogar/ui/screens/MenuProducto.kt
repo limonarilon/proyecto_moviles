@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.ferreteriahogar.ui.Routes
 
 /*
 La idea sería que acá el usuario pueda administrar productos del sistema, creando
@@ -35,7 +36,7 @@ listando productos, buscar por id de producto, eliminar productos y editar produ
 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuProductos(paddingValues: PaddingValues,navController : NavController){
+fun MenuProducto(paddingValues: PaddingValues,navController : NavController){
 
     Box(
         modifier = Modifier
@@ -78,6 +79,7 @@ fun MenuProductos(paddingValues: PaddingValues,navController : NavController){
             ) {
                 Button(
                     onClick = {
+                        navController.navigate(Routes.FormularioProducto + "/-1")
 
                     },
                     Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
@@ -103,6 +105,7 @@ fun MenuProductos(paddingValues: PaddingValues,navController : NavController){
 
                 Button(
                     onClick = {
+                        navController.navigate(Routes.ListaProductos)
 
                     },
                     Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
@@ -152,6 +155,7 @@ fun MenuProductos(paddingValues: PaddingValues,navController : NavController){
 
                 Button(
                     onClick = {
+                        navController.navigate(Routes.ListaProductos)
 
                     },
                     Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
@@ -166,7 +170,7 @@ fun MenuProductos(paddingValues: PaddingValues,navController : NavController){
                     )
                 ) {
                     Text(
-                        text = "Eliminar un Producto",
+                        text = "Editar un Producto",
                         style = TextStyle(
                             fontSize = 21.sp
                         )
@@ -208,5 +212,5 @@ fun MenuProductos(paddingValues: PaddingValues,navController : NavController){
 @Composable
 fun PreviewMenuProductos() {
     val navController = rememberNavController()
-    MenuProductos(PaddingValues(),navController)
+    MenuProducto(PaddingValues(),navController)
 }
