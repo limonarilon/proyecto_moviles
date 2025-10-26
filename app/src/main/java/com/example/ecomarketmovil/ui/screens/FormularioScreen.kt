@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ecomarketmovil.ui.viewmodels.FormularioEvent
 import com.example.ecomarketmovil.ui.viewmodels.FormularioViewModel
+import com.example.ecomarketmovil.ui.viewmodels.UsuarioViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

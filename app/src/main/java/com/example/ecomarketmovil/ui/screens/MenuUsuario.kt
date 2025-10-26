@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.ecomarketmovil.ui.Routes
 
 /*
 La idea sería que acá el usuario pueda administrar usuarios del sistema, creando (redireccionando al register)
@@ -78,7 +79,7 @@ fun MenuUsuario(paddingValues: PaddingValues,navController : NavController) {
             ) {
                 Button(
                     onClick = {
-
+                        navController.navigate(Routes.formularioUsuarioConRut("-1"))
                     },
                     Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
                     shape = RoundedCornerShape(25.dp),
@@ -103,7 +104,7 @@ fun MenuUsuario(paddingValues: PaddingValues,navController : NavController) {
 
                 Button(
                     onClick = {
-
+                        navController.navigate(Routes.ListaUsuarios)
                     },
                     Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
                     shape = RoundedCornerShape(25.dp),
@@ -128,7 +129,7 @@ fun MenuUsuario(paddingValues: PaddingValues,navController : NavController) {
 
                 Button(
                     onClick = {
-
+                        navController.navigate(Routes.ListaUsuarios)
                     },
                     Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
                     shape = RoundedCornerShape(25.dp),
@@ -152,7 +153,7 @@ fun MenuUsuario(paddingValues: PaddingValues,navController : NavController) {
 
                 Button(
                     onClick = {
-
+                        navController.navigate(Routes.ListaUsuarios)
                     },
                     Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
                     shape = RoundedCornerShape(25.dp),
@@ -166,7 +167,7 @@ fun MenuUsuario(paddingValues: PaddingValues,navController : NavController) {
                     )
                 ) {
                     Text(
-                        text = "Eliminar un Usuario",
+                        text = "Editar un Usuario",
                         style = TextStyle(
                             fontSize = 21.sp
                         )

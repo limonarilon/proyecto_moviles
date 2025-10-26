@@ -18,4 +18,13 @@ object Routes {
     var FormularioProducto = "formularioproducto"
 
     fun formularioProductoConId(id: Int) = "$FormularioProducto/$id"
+
+    var FormularioUsuario = "formulariousuario"
+
+    var FormUsuarioScreen = "formUsuarioScreen"
+    fun formularioUsuarioConRut(rut: String)= "$FormUsuarioScreen/$rut"
+
+    var ListaUsuarios = "listaUsuarios"
+
+
 }
