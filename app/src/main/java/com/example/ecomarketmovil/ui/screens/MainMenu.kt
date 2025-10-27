@@ -90,7 +90,7 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
                         pressedElevation = 8.dp
                     ),
                     colors = ButtonDefaults.buttonColors(
-                        Color.DarkGray,
+                        Color(0xFF053900),
                         Color.White
                     )
                 ) {
@@ -114,7 +114,7 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
                         pressedElevation = 8.dp
                     ),
                     colors = ButtonDefaults.buttonColors(
-                        Color.DarkGray,
+                        Color(0xFF053900),
                         Color.White
                     )
                 ) {
@@ -138,7 +138,7 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
                         pressedElevation = 8.dp
                     ),
                     colors = ButtonDefaults.buttonColors(
-                        Color.DarkGray,
+                        Color(0xFF053900),
                         Color.White
                     )
                 ) {
@@ -170,7 +170,7 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
                             pressedElevation = 8.dp
                         ),
                         colors = ButtonDefaults.buttonColors(
-                            Color.DarkGray,
+                            Color(0xFF053900),
                             Color.White
                         )
                     ) {
@@ -195,7 +195,7 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
                             pressedElevation = 8.dp
                         ),
                         colors = ButtonDefaults.buttonColors(
-                            Color.DarkGray,
+                            Color(0xFF053900),
                             Color.White
                         )
                     ) {

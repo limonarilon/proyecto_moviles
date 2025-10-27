@@ -67,7 +67,7 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color.White,
+                        Color(0xFFa7dc8f),
                         Color.LightGray
                     )
                 )
@@ -247,7 +247,7 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
                 pressedElevation = 8.dp
             ),
             colors = ButtonDefaults.buttonColors(
-                Color.Black,
+                Color(0xFF053900),
                 Color.White
             )
         ) {

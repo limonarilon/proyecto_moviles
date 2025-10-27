@@ -59,7 +59,7 @@ fun NavBar(navController: NavController){
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.DarkGray,
+            containerColor = Color(0xFF053900),
             titleContentColor = Color.White,
             actionIconContentColor = Color.White
         )
