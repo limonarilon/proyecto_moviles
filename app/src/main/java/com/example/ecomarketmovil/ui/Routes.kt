@@ -3,28 +3,19 @@ package com.example.ecomarketmovil.ui
 object Routes {
     var Login = "login"
     var MainMenu = "mainMenu"
-
     var Mision = "mision"
-
     var Vision = "vision"
-
     var Register = "register"
 
-    var MenuUsuario = "menuUsuario"
+    // --- Rutas de Usuario ---
+    var MenuUsuario = "menu_usuario"
+    var ListaUsuarios = "lista_usuarios"
+    var FormularioUsuario = "formulario_usuario" // Ruta base para crear
+    fun formularioUsuarioConRut(rut: String) = "$FormularioUsuario/$rut" // Función para editar
 
-    var MenuProducto = "menuProducto"
-
-    var ListaProductos = "listaproductos"
-    var FormularioProducto = "formularioproducto"
-
+    // --- Rutas de Producto ---
+    var MenuProducto = "menu_producto"
+    var ListaProductos = "lista_productos"
+    var FormularioProducto = "formulario_producto"
     fun formularioProductoConId(id: Int) = "$FormularioProducto/$id"
-
-
-    var FormUsuarioScreen = "formUsuarioScreen"
-    var FormularioUsuario = "formularioUsuario"
-    fun formularioUsuarioConId(id: Int)= "$FormUsuarioScreen/$id"
-    fun formularioUsuarioConRut(rut: String)= "$FormUsuarioScreen/$rut"
-    var ListaUsuarios = "listaUsuarios"
-
-
 }

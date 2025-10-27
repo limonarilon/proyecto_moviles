@@ -79,7 +79,7 @@ fun MenuUsuario(paddingValues: PaddingValues,navController : NavController) {
             ) {
                 Button(
                     onClick = {
-                        navController.navigate(Routes.formularioUsuarioConRut("-1"))
+                        navController.navigate(Routes.FormularioUsuario)
                     },
                     Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
                     shape = RoundedCornerShape(25.dp),

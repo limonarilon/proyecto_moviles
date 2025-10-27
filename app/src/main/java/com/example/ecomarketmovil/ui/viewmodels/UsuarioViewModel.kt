@@ -23,7 +23,7 @@ class UsuarioViewModel : ViewModel() {
     val navegacionExitosa = _navegacionExitosa.asStateFlow()
     val textoBusqueda = _textoBusqueda.asStateFlow()
 
-    // Flow que combina la lista de productos y el texto de búsqueda para producir la lista filtrada
+    // Flow que combina la lista de usuarios y el texto de búsqueda para producir la lista filtrada
     val usuariosFiltrados = _textoBusqueda
         .combine(_usuarios) { texto, usuarios ->
             if (texto.isBlank()) {
@@ -48,7 +48,7 @@ class UsuarioViewModel : ViewModel() {
         _textoBusqueda.value = texto
     }
 
-    fun validarYGuardar(rut: String, nombre: String, email: String, contrasena: String, direccion: String) {
+    fun validarYGuardar(rut: String, nombre: String, email: String, contrasena: String, direccion: String, esNuevo:Boolean) {
         _mensajeError.value = null // Limpiar error anterior
 
         if (rut.isBlank() || nombre.isBlank() || email.isBlank() || contrasena.isBlank() || direccion.isBlank()) {
@@ -56,10 +56,17 @@ class UsuarioViewModel : ViewModel() {
             return
         }
 
-        if (rut != "-1") {
-            actualizar(rut=rut, nombre=nombre, email=email, contrasena=contrasena, direccion=direccion)
+        val existeUsuario = _usuarios.value.any { it.rut == rut }
+
+        if (esNuevo && existeUsuario) {
+            _mensajeError.value = "El RUT ingresado ya existe."
+            return
+        }
+
+        if (esNuevo) {
+            agregar(rut, nombre, email, contrasena, direccion)
         } else {
-            agregar(rut=rut, nombre=nombre, email=email, contrasena=contrasena, direccion=direccion)
+            actualizar(rut, nombre, email, contrasena, direccion)
         }
         _navegacionExitosa.value = true // Indicar navegación exitosa
     }

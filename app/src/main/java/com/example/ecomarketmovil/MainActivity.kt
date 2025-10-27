@@ -83,19 +83,20 @@ class MainActivity : ComponentActivity() {
                     ListaUsuarioScreen(navController, usuarioViewModel)
                 }
 
-                composable(
-                    route = Routes.FormUsuarioScreen + "/{rut}",
-                    arguments = listOf(navArgument("rut") { type = NavType.StringType })
-                ) { backStackEntry ->
-                    val rut = backStackEntry.arguments?.getString("rut") ?: "-1"
-                    FormUsuarioScreen(navController, usuarioViewModel, -1)
+                // Ruta para crear un nuevo usuario (rut es nulo)
+                composable(Routes.FormularioUsuario) {
+                    FormUsuarioScreen(navController, usuarioViewModel, rut = null)
                 }
 
-
-
-
-
-                })
+                // Ruta para editar un usuario existente (se pasa el rut)
+                composable(
+                    route = Routes.FormularioUsuario + "/{rut}",
+                    arguments = listOf(navArgument("rut") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val rut = backStackEntry.arguments?.getString("rut")
+                    FormUsuarioScreen(navController, usuarioViewModel, rut = rut)
+                }
+            })
         }
     }
 }
