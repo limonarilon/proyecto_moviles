@@ -3,6 +3,7 @@ package com.example.ecomarketmovil.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecomarketmovil.data.Usuario
+import com.example.ecomarketmovil.utils.ValidationUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,7 +24,7 @@ class UsuarioViewModel : ViewModel() {
     val navegacionExitosa = _navegacionExitosa.asStateFlow()
     val textoBusqueda = _textoBusqueda.asStateFlow()
 
-    // Flow que combina la lista de usuarios y el texto de búsqueda para producir la lista filtrada
+    // Flow que combina la lista de productos y el texto de búsqueda para producir la lista filtrada
     val usuariosFiltrados = _textoBusqueda
         .combine(_usuarios) { texto, usuarios ->
             if (texto.isBlank()) {
@@ -40,8 +41,6 @@ class UsuarioViewModel : ViewModel() {
             initialValue = _usuarios.value
         )
 
-    private var nextId = 1
-
     // --- Lógica de Negocio ---
 
     fun onTextoBusquedaChange(texto: String) {
@@ -53,6 +52,16 @@ class UsuarioViewModel : ViewModel() {
 
         if (rut.isBlank() || nombre.isBlank() || email.isBlank() || contrasena.isBlank() || direccion.isBlank()) {
             _mensajeError.value = "Todos los campos son obligatorios."
+            return
+        }
+
+        if (!ValidationUtils.esRutValido(rut)) {
+            _mensajeError.value = "El formato del RUT no es válido."
+            return
+        }
+
+        if (!ValidationUtils.esEmailValido(email)) {
+            _mensajeError.value = "El formato del email no es válido."
             return
         }
 
@@ -82,7 +91,7 @@ class UsuarioViewModel : ViewModel() {
             Usuario("9873423-1", "Daniela Pérez", "da.perez@email.com", "Usser5678*","av Antonio Varas #777"),
             Usuario("18938473-4", "Juan González", "ju.gonzalez@email.com", "Usser1234-","av Antonio Varas #888"),
             Usuario("21784763-9", "Maria Ordenes", "ma.ordenes@email.com", "Usser5678-","av Antonio Varas #999")
-            )
+        )
         _usuarios.value = listaEjemplo
     }
 

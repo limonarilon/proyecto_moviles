@@ -6,6 +6,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,17 +18,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.ecomarketmovil.ui.viewmodels.FormularioEvent
 import com.example.ecomarketmovil.ui.viewmodels.FormularioViewModel
-import com.example.ecomarketmovil.ui.viewmodels.UsuarioViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormularioScreen(
-    viewModel: FormularioViewModel = viewModel() // 1. Obtener instancia del ViewModel
+    navController: NavController, // 1. Aceptar NavController
+    viewModel: FormularioViewModel = viewModel()
 ) {
-    // 2. Leer el estado del ViewModel
     val state = viewModel.state
+    val navegacionExitosa by viewModel.navegacionExitosa.collectAsState()
+
+    // 2. Efecto para navegar hacia atrás
+    LaunchedEffect(navegacionExitosa) {
+        if (navegacionExitosa) {
+            navController.popBackStack()
+            viewModel.onNavegacionCompleta()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -203,8 +215,10 @@ fun FormularioScreen(
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewFormularioScreen() {
-    FormularioScreen()
+    // 3. Actualizar la previsualización
+    FormularioScreen(navController = rememberNavController())
 }

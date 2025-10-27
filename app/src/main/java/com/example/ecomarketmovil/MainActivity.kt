@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 composable (Routes.Register ){
-                    FormularioScreen()
+                    FormularioScreen(navController)
                 }
                 composable(Routes.MainMenu+"/{user}"+"/{passwordHashed}",){
                     val user = it.arguments?.getString("user")
