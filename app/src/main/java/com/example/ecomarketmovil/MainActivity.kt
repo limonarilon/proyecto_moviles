@@ -16,6 +16,7 @@ import androidx.navigation.navArgument
 import com.example.ecomarketmovil.ui.Routes
 import com.example.ecomarketmovil.ui.screens.*
 import com.example.ecomarketmovil.ui.viewmodels.ProductoViewModel
+import com.example.ecomarketmovil.ui.viewmodels.UsuarioViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +25,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val productoViewModel: ProductoViewModel = viewModel()
+            val usuarioViewModel: UsuarioViewModel = viewModel()
 
             NavHost(navController = navController, startDestination = Routes.Login, builder = {
                 composable(Routes.Login,){
@@ -51,11 +53,7 @@ class MainActivity : ComponentActivity() {
                         Vision(paddingValues = innerPadding, navController)
                     }
                 }
-                composable( Routes.MenuUsuario){
-                    Scaffold (Modifier.fillMaxSize()){ innerPadding ->
-                        MenuUsuario(paddingValues = innerPadding, navController)
-                    }
-                }
+
                 composable( Routes.MenuProducto){
                     Scaffold (Modifier.fillMaxSize()){ innerPadding ->
                         MenuProducto(paddingValues = innerPadding, navController)
@@ -74,7 +72,30 @@ class MainActivity : ComponentActivity() {
                     val id = it.arguments?.getInt("id") ?: -1
                     FormProductoScreen(navController, productoViewModel, id)
                 }
-            })
+
+                composable( Routes.MenuUsuario){
+                    Scaffold (Modifier.fillMaxSize()){ innerPadding ->
+                        MenuUsuario(paddingValues = innerPadding, navController)
+                    }
+                }
+
+                composable(Routes.ListaUsuarios) {
+                    ListaUsuarioScreen(navController, usuarioViewModel)
+                }
+
+                composable(
+                    route = Routes.FormularioUsuario + "/{rut}",
+                    arguments = listOf(navArgument("rut") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val rut = backStackEntry.arguments?.getString("rut") ?: "-1"
+                    FormUsuarioScreen(navController, usuarioViewModel, rut)
+                }
+                
+
+
+
+
+                })
         }
     }
 }
