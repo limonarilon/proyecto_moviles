@@ -72,9 +72,9 @@ class UsuarioViewModel : ViewModel() {
         if (_usuarios .value.isNotEmpty()) return // Evita duplicar datos
         val listaEjemplo = listOf(
             Usuario("15023456-9", "Luis Jara", "lu.jara@email.com", "Usser1234*","av Antonio Varas #666"),
-            Usuario("9873423-1", "Daniela Pérez", "da.perez@email.com", "Usser5678*","av Antonio Varas #666"),
-            Usuario("18938473-4", "Juan González", "ju.gonzalez@email.com", "Usser1234-","av Antonio Varas #666"),
-            Usuario("21784763-9", "Maria Ordenes", "ma.ordenes@email.com", "Usser5678-","av Antonio Varas #666")
+            Usuario("9873423-1", "Daniela Pérez", "da.perez@email.com", "Usser5678*","av Antonio Varas #777"),
+            Usuario("18938473-4", "Juan González", "ju.gonzalez@email.com", "Usser1234-","av Antonio Varas #888"),
+            Usuario("21784763-9", "Maria Ordenes", "ma.ordenes@email.com", "Usser5678-","av Antonio Varas #999")
             )
         _usuarios.value = listaEjemplo
     }

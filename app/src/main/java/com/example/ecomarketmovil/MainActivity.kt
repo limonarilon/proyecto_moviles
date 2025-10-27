@@ -84,13 +84,13 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable(
-                    route = Routes.FormularioUsuario + "/{rut}",
+                    route = Routes.FormUsuarioScreen + "/{rut}",
                     arguments = listOf(navArgument("rut") { type = NavType.StringType })
                 ) { backStackEntry ->
                     val rut = backStackEntry.arguments?.getString("rut") ?: "-1"
-                    FormUsuarioScreen(navController, usuarioViewModel, rut)
+                    FormUsuarioScreen(navController, usuarioViewModel, -1)
                 }
-                
+
 
 
 
