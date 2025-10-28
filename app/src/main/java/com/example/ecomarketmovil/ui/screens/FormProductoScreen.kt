@@ -112,8 +112,12 @@ fun FormProductoScreen(navController: NavController, viewModel: ProductoViewMode
                     // Llama a la función de validación del ViewModel
                     viewModel.validarYGuardar(id, nombre, precio, stock)
                 },
-                modifier = Modifier.fillMaxWidth()
-            ) {
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    Color(0xFF053900),
+                    Color.White
+                )
+            ){
                 Text("Guardar")
             }
         }

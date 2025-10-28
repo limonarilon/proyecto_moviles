@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -129,8 +130,12 @@ fun FormUsuarioScreen(navController: NavController, viewModel: UsuarioViewModel,
                 onClick = {
                     viewModel.validarYGuardar(rutState, nombre, email, contrasena, direccion, esNuevo)
                 },
-                modifier = Modifier.fillMaxWidth()
-            ) {
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    Color(0xFF053900),
+                    Color.White
+                )
+            ){
                 Text("Guardar")
             }
         }
