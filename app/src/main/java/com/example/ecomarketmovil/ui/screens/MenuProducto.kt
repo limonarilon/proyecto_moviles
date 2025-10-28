@@ -89,7 +89,7 @@ fun MenuProducto(paddingValues: PaddingValues,navController : NavController){
                         pressedElevation = 8.dp
                     ),
                     colors = ButtonDefaults.buttonColors(
-                        Color.DarkGray,
+                        Color(0xFF053900),
                         Color.White
                     )
                 ) {
@@ -115,7 +115,7 @@ fun MenuProducto(paddingValues: PaddingValues,navController : NavController){
                         pressedElevation = 8.dp
                     ),
                     colors = ButtonDefaults.buttonColors(
-                        Color.DarkGray,
+                        Color(0xFF053900),
                         Color.White
                     )
                 ) {
@@ -143,7 +143,7 @@ fun MenuProducto(paddingValues: PaddingValues,navController : NavController){
                         pressedElevation = 8.dp
                     ),
                     colors = ButtonDefaults.buttonColors(
-                        Color.DarkGray,
+                        Color(0xFF053900),
                         Color.White
                     )
                 ) {
@@ -168,7 +168,7 @@ fun MenuProducto(paddingValues: PaddingValues,navController : NavController){
                         pressedElevation = 8.dp
                     ),
                     colors = ButtonDefaults.buttonColors(
-                        Color.DarkGray,
+                        Color(0xFF053900),
                         Color.White
                     )
                 ) {
