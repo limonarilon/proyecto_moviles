@@ -52,9 +52,11 @@ import com.example.ecomarketmovil.ui.Routes
 import com.example.ecomarketmovil.utils.sha256
 import com.example.ecomarketmovil.data.accounts
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontStyle
 import com.example.ecomarketmovil.data.models.WeatherResponse
 import com.example.ecomarketmovil.data.remote.RetrofitClientWeather
+import com.example.ecomarketmovil.utils.Torch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -276,8 +278,10 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
         val user1 = "Seba"
         val pass1 = "abc123"
 
+        val context = LocalContext.current //le da le contexto del boton a la funcion torch
         Button(
             onClick = {
+                val torch = Torch(context)
 
                 emailError = if (email.isBlank()) "Nombre no puede estar vacio" else ""
                 passwordError = if (password.isBlank()) "Contraseña no puede estar vacia" else ""
@@ -290,8 +294,10 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
                         println("Contraseña cifrada: $passwordHashed")
 
                         navController.navigate(Routes.MainMenu+"/${user.user}"+"/${passwordHashed}")
+                        torch.turnOn()
                     }else {
                         loginError = "El usuario o contraseña no coinciden"
+                        torch.turnOff()
                     }
 
                 }
