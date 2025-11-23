@@ -70,22 +70,31 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
     var passwordError by remember {mutableStateOf("") }
     var loginError by remember { mutableStateOf("") }
 
-    var temperature by remember { mutableStateOf<Int?>(null) }
+    var temperature by remember { mutableStateOf<Float?>(null) }
+    var apiKey= "kn3k5xidrpk5cpfvfov5j6bxgt8eimj71jhn4ab2"
 
     LaunchedEffect(Unit) {
+        if (apiKey == "YOUR_API_KEY") {
+            println("ADVERTENCIA: La API Key de Meteosource no ha sido configurada.")
+            return@LaunchedEffect
+        }
+
         try {
             val response = withContext(Dispatchers.IO) {
-                RetrofitClientWeather.apiWeather.getWeather()
+                RetrofitClientWeather.apiWeather.getWeather(
+                    lat = "-33.44",      // Latitud de Santiago
+                    lon = "-70.66",      // Longitud de Santiago
+                    apiKey = apiKey
+                )
             }
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    temperature = response.body()?.temperature
+                    temperature = response.body()?.current?.temperature
                 } else {
-                    println("Error en la respuesta del clima: ${response.message()}")
+                    println("Error en la respuesta del clima: ${response.errorBody()?.string()}")
                 }
             }
         } catch (e: Exception) {
-            // Maneja posibles errores de red o de otro tipo
             println("Error al obtener el clima: ${e.message}")
         }
     }
@@ -112,7 +121,7 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
 
         // =========== MUESTRA DE TEMPERATURA ===========
         Spacer(modifier = Modifier.height(16.dp))
-        // 3. Mostrar la temperatura si está disponible
+
         temperature?.let { temp ->
             Text(
                 text = "Temperatura actual: $temp°C",

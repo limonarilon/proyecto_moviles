@@ -8,7 +8,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 
 object RetrofitClientWeather {
-    private const val BASE_URL = "https://api.boostr.cl/"
+    private const val BASE_URL = "https://www.meteosource.com/api/v1/free/"
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }

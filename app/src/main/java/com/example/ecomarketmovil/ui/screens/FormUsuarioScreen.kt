@@ -128,7 +128,7 @@ fun FormUsuarioScreen(navController: NavController, viewModel: UsuarioViewModel,
 
             Button(
                 onClick = {
-                    viewModel.validarYGuardar(rutState, nombre, email, contrasena, direccion, esNuevo)
+                    viewModel.validarYGuardar(rutState, nombre, email, contrasena, direccion)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
