@@ -20,6 +20,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -33,6 +34,10 @@ import com.example.ecomarketmovil.ui.viewmodels.UsuarioViewModel
 
 @Composable
 fun ListaUsuarioScreen(navController: NavController, viewModel: UsuarioViewModel) {
+
+    LaunchedEffect(Unit) {
+        viewModel.cargarUsuarios()
+    }
 
     val textoBusqueda by viewModel.textoBusqueda.collectAsState()
     val usuarios by viewModel.usuariosFiltrados.collectAsState()
@@ -132,7 +137,7 @@ fun ListaUsuarioScreen(navController: NavController, viewModel: UsuarioViewModel
 fun PreviewListaUsuario() {
     val navController = rememberNavController()
     val viewModel = UsuarioViewModel().apply {
-        cargarDatosDeEjemplo()
+        cargarUusarios()
     }
     ListaUsuarioScreen(navController, viewModel)
 }

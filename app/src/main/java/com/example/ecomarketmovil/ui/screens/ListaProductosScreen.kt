@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -18,6 +19,10 @@ import com.example.ecomarketmovil.ui.viewmodels.ProductoViewModel
 
 @Composable
 fun ListaProductosScreen(navController: NavController, viewModel: ProductoViewModel) {
+
+    LaunchedEffect(Unit) {
+        viewModel.cargarProductos()
+    }
 
     // Recogemos los estados del ViewModel
     val textoBusqueda by viewModel.textoBusqueda.collectAsState()
@@ -120,7 +125,7 @@ fun ListaProductosScreen(navController: NavController, viewModel: ProductoViewMo
 fun PreviewListaProductos() {
     val navController = rememberNavController()
     val viewModel = ProductoViewModel().apply {
-        cargarDatosDeEjemplo()
+        cargarProductos()
     }
     ListaProductosScreen(navController, viewModel)
 }
