@@ -137,7 +137,7 @@ fun ListaUsuarioScreen(navController: NavController, viewModel: UsuarioViewModel
 fun PreviewListaUsuario() {
     val navController = rememberNavController()
     val viewModel = UsuarioViewModel().apply {
-        cargarUusarios()
+        cargarUsuarios()
     }
     ListaUsuarioScreen(navController, viewModel)
 }

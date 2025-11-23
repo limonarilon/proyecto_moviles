@@ -51,7 +51,12 @@ import com.example.ecomarketmovil.R
 import com.example.ecomarketmovil.ui.Routes
 import com.example.ecomarketmovil.utils.sha256
 import com.example.ecomarketmovil.data.accounts
-
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.text.font.FontStyle
+import com.example.ecomarketmovil.data.models.WeatherResponse
+import com.example.ecomarketmovil.data.remote.RetrofitClientWeather
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,6 +69,26 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
     var emailError by remember {mutableStateOf("") }
     var passwordError by remember {mutableStateOf("") }
     var loginError by remember { mutableStateOf("") }
+
+    var temperature by remember { mutableStateOf<Int?>(null) }
+
+    LaunchedEffect(Unit) {
+        try {
+            val response = withContext(Dispatchers.IO) {
+                RetrofitClientWeather.apiWeather.getWeather()
+            }
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    temperature = response.body()?.temperature
+                } else {
+                    println("Error en la respuesta del clima: ${response.message()}")
+                }
+            }
+        } catch (e: Exception) {
+            // Maneja posibles errores de red o de otro tipo
+            println("Error al obtener el clima: ${e.message}")
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -83,6 +108,19 @@ fun Login(paddingValues: PaddingValues, navController: NavController) {
         .padding(paddingValues),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
+
+
+        // =========== MUESTRA DE TEMPERATURA ===========
+        Spacer(modifier = Modifier.height(16.dp))
+        // 3. Mostrar la temperatura si está disponible
+        temperature?.let { temp ->
+            Text(
+                text = "Temperatura actual: $temp°C",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.DarkGray
+            )
+        }
 
 
         // =========== TITULO DE LOGIN ===========
