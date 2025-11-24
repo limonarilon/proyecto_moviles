@@ -1,5 +1,6 @@
 package com.example.ecomarketmovil.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,136 +9,89 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.ecomarketmovil.ui.Routes
-import com.example.ecomarketmovil.ui.viewmodels.UsuarioViewModel
+import com.example.ecomarketmovil.data.UsuarioRespuesta
 
 @Composable
-fun ListaUsuarioScreen(navController: NavController, viewModel: UsuarioViewModel) {
+fun ListaUsuarioScreen(
+    usuarios: List<UsuarioRespuesta>,
+    onEditar: (UsuarioRespuesta) -> Unit,
+    onEliminar: (UsuarioRespuesta) -> Unit
+) {
 
-    LaunchedEffect(Unit) {
-        viewModel.cargarUsuarios()
-    }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
 
-    val textoBusqueda by viewModel.textoBusqueda.collectAsState()
-    val usuarios by viewModel.usuariosFiltrados.collectAsState()
+        Text(
+            text = "Gestión de Usuarios",
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
 
-    Scaffold(
-        floatingActionButton = {
-            // Navega al formulario en modo "crear"
-            FloatingActionButton(onClick = { navController.navigate(Routes.FormularioUsuario) }) {
-                Text("+")
-            }
-        }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp)
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text("Lista de Usuarios", style = MaterialTheme.typography.headlineMedium)
-            Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = textoBusqueda,
-                onValueChange = viewModel::onTextoBusquedaChange,
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Buscar por nombre") },
-                singleLine = true
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+            items(usuarios) { usuario ->
 
-            if (usuarios.isEmpty()) {
-                Text("No hay usuarios registrados o que coincidan con la búsqueda.")
-            } else {
-                LazyColumn {
-                    items(usuarios) { usuario ->
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp)
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onEditar(usuario) } // al tocar la tarjeta -> editar usuario
+                        .padding(4.dp)
+                ) {
+
+                    Column(modifier = Modifier.padding(16.dp)) {
+
+                        val estado = if (usuario.activo == 1) "Activo" else "Inactivo"
+                        val colorEstado = if (usuario.activo == 1) Color(0xFF008000) else Color.Red
+
+                        Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                "ID: ${usuario.id}",
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                            Text(
+                                estado,
+                                color = colorEstado,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Text("Nombre: ${usuario.nombre}", style = MaterialTheme.typography.bodyLarge)
+                        Text("Email: ${usuario.email}")
+                        Text("RUT: ${usuario.rut}")
+                        Text("Rol: ${usuario.rol}")
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .padding(12.dp)
-                                    .fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(
-                                        text = usuario.nombre,
-                                        style = MaterialTheme.typography.bodyLarge
-                                    )
-                                    Text(
-                                        text = usuario.email,
-                                        style = MaterialTheme.typography.bodyMedium
-                                    )
-                                    Text(
-                                        text = "RUT: ${usuario.rut}",
-                                        style = MaterialTheme.typography.bodySmall
-                                    )
-                                }
-
-                                Row {
-                                    Button(
-                                        onClick = {
-                                            // Navega al formulario en modo "editar", pasando el rut
-                                            navController.navigate(Routes.formularioUsuarioConRut(usuario.rut))
-                                        }
-                                    ) {
-                                        Text("Editar")
-                                    }
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Button(
-                                        onClick = {
-                                            viewModel.eliminar(usuario)
-                                        },
-                                        colors = ButtonDefaults.buttonColors(
-                                            containerColor = MaterialTheme.colorScheme.errorContainer,
-                                            contentColor = MaterialTheme.colorScheme.onErrorContainer
-                                        )
-
-                                    ) {
-                                        Text("Eliminar")
-                                    }
-                                }
-                            }
+                            Text(
+                                "Eliminar",
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.clickable { onEliminar(usuario) }
+                            )
                         }
                     }
                 }
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewListaUsuario() {
-    val navController = rememberNavController()
-    val viewModel = UsuarioViewModel().apply {
-        cargarUsuarios()
-    }
-    ListaUsuarioScreen(navController, viewModel)
 }

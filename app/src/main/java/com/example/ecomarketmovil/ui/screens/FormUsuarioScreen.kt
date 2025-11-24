@@ -1,6 +1,9 @@
 package com.example.ecomarketmovil.ui.screens
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +14,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,24 +24,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.ecomarketmovil.ui.viewmodels.UsuarioViewModel
 
 @Composable
-fun FormUsuarioScreen(navController: NavController, viewModel: UsuarioViewModel, rut: String?) {
+fun FormUsuarioScreen(navController: NavController, viewModel: UsuarioViewModel, idUsuario: Int?) {
+
+    val esNuevo = idUsuario == null
+
     var nombre by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var contrasena by remember { mutableStateOf("") }
-    var direccion by remember { mutableStateOf("") }
-    var rutState by remember { mutableStateOf("") }
-    val esNuevo = rut == null
+    var password by remember { mutableStateOf("") }
+    var rut by remember { mutableStateOf("") }
+    var rol by remember { mutableStateOf("USER") } // Estado para el rol, con "USER" como default
 
     val mensajeError by viewModel.mensajeError.collectAsState()
     val navegacionExitosa by viewModel.navegacionExitosa.collectAsState()
@@ -49,15 +55,14 @@ fun FormUsuarioScreen(navController: NavController, viewModel: UsuarioViewModel,
         }
     }
 
-    LaunchedEffect(rut) {
+    LaunchedEffect(idUsuario) {
         if (!esNuevo) {
-            val usuario = viewModel.obtenerPorRut(rut!!)
+            val usuario = viewModel.obtenerPorIdLocal(idUsuario!!)
             if (usuario != null) {
-                rutState = usuario.rut
                 nombre = usuario.nombre
                 email = usuario.email
-                contrasena = usuario.contrasena
-                direccion = usuario.direccion
+                rut = usuario.rut
+                rol = usuario.rol // Cargar el rol del usuario que se está editando
             }
         }
     }
@@ -69,17 +74,20 @@ fun FormUsuarioScreen(navController: NavController, viewModel: UsuarioViewModel,
                 .padding(it)
                 .padding(16.dp)
         ) {
-            val titulo = if (esNuevo) "Agregar Usuario" else "Editar Usuario"
+
+            val titulo = if (esNuevo) "Registrar Usuario" else "Editar Usuario"
             Text(titulo, style = MaterialTheme.typography.headlineMedium)
+
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
-                value = rutState,
-                onValueChange = { rutState = it },
+                value = rut,
+                onValueChange = { rut = it },
                 label = { Text("RUT") },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = esNuevo
             )
+
             Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
@@ -88,6 +96,7 @@ fun FormUsuarioScreen(navController: NavController, viewModel: UsuarioViewModel,
                 label = { Text("Nombre Completo") },
                 modifier = Modifier.fillMaxWidth()
             )
+
             Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
@@ -97,26 +106,47 @@ fun FormUsuarioScreen(navController: NavController, viewModel: UsuarioViewModel,
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
             )
+
             Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
-                value = contrasena,
-                onValueChange = { contrasena = it },
+                value = password,
+                onValueChange = { password = it },
                 label = { Text("Contraseña") },
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                placeholder = { if (!esNuevo) Text("Dejar en blanco para no cambiar") }
             )
-            Spacer(modifier = Modifier.height(8.dp))
 
-            OutlinedTextField(
-                value = direccion,
-                onValueChange = { direccion = it },
-                label = { Text("Dirección") },
-                modifier = Modifier.fillMaxWidth()
-            )
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Selección de Rol con RadioButtons
+            val roles = listOf("USER", "ADMIN")
+            Text("Rol", style = MaterialTheme.typography.titleMedium)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                roles.forEach { roleValue ->
+                    Row(
+                        modifier = Modifier.clickable { rol = roleValue },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = (rol == roleValue),
+                            onClick = { rol = roleValue }
+                        )
+                        Text(
+                            text = roleValue,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(start = 4.dp)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             mensajeError?.let {
                 Text(
@@ -128,21 +158,27 @@ fun FormUsuarioScreen(navController: NavController, viewModel: UsuarioViewModel,
 
             Button(
                 onClick = {
-                    viewModel.validarYGuardar(rutState, nombre, email, contrasena, direccion)
+                    viewModel.validarYGuardar(
+                        id = idUsuario,
+                        nombre = nombre,
+                        email = email,
+                        password = password,
+                        rut = rut,
+                        rol = rol
+                    )
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    Color(0xFF053900),
-                    Color.White
+                    containerColor = Color(0xFF053900),
+                    contentColor = Color.White
                 )
-            ){
+            ) {
                 Text("Guardar")
             }
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
 fun PreviewFormUsuario() {
     val navController = rememberNavController()

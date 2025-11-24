@@ -1,4 +1,4 @@
-package com.example.ecomarketmovil.data.remote
+package com.example.ecomarketmovil.remote
 
 import com.example.ecomarketmovil.data.Producto
 import retrofit2.Response

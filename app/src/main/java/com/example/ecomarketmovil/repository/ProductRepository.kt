@@ -1,7 +1,7 @@
-package com.example.ecomarketmovil.data.Repository
+package com.example.ecomarketmovil.repository
 
 import com.example.ecomarketmovil.data.Producto
-import com.example.ecomarketmovil.data.remote.ProductApiService
+import com.example.ecomarketmovil.remote.ProductApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

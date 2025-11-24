@@ -1,12 +1,13 @@
-package com.example.ecomarketmovil.data.remote
+package com.example.ecomarketmovil.remote
+
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-object RetrofitClient {
 
-    private const val BASE_URL = "https://jsonplaceholder.com/api/" // url del backend
+object RetrofitClientWeather {
+    private const val BASE_URL = "https://www.meteosource.com/api/v1/free/"
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
@@ -15,22 +16,13 @@ object RetrofitClient {
         .addInterceptor(logging)
         .build()
 
-    val apiProduct: ProductApiService by lazy {
+    val apiWeather: WeatherService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ProductApiService::class.java)
-    }
-
-    val apiUsuario: UsuarioApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(UsuarioApiService::class.java)
+            .create(WeatherService::class.java)
     }
 
 }

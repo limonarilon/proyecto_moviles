@@ -3,8 +3,8 @@ package com.example.ecomarketmovil.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecomarketmovil.data.Producto
-import com.example.ecomarketmovil.data.remote.RetrofitClient
-import com.example.ecomarketmovil.data.Repository.ProductRepository
+import com.example.ecomarketmovil.remote.RetrofitClient
+import com.example.ecomarketmovil.repository.ProductRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 

@@ -6,6 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -28,7 +31,7 @@ class MainActivity : ComponentActivity() {
             val usuarioViewModel: UsuarioViewModel = viewModel()
 
             NavHost(navController = navController, startDestination = Routes.Login, builder = {
-                composable(Routes.Login,){
+                composable(Routes.Login,){ 
                     Scaffold(Modifier.fillMaxSize()) { innerPadding ->
                         Login(paddingValues = innerPadding, navController)
                     }
@@ -36,14 +39,14 @@ class MainActivity : ComponentActivity() {
                 composable (Routes.Register ){
                     FormularioScreen(navController)
                 }
-                composable(Routes.MainMenu+"/{user}"+"/{passwordHashed}",){
+                composable(Routes.MainMenu+"/{user}"+"/{passwordHashed}",){ 
                     val user = it.arguments?.getString("user")
                     val passwordHashed = it.arguments?.getString("passwordHashed")
                     Scaffold(Modifier.fillMaxSize()) { innerPadding ->
                         MainMenu(paddingValues = innerPadding, user?:"Error", passwordHashed?:"No" , navController)
                     }
                 }
-                composable( Routes.Mision, ) {
+                composable( Routes.Mision, ) { 
                     Scaffold (Modifier.fillMaxSize()){ innerPadding ->
                         Mision(paddingValues = innerPadding, navController)
                     }
@@ -80,21 +83,33 @@ class MainActivity : ComponentActivity() {
                 }
 
                 composable(Routes.ListaUsuarios) {
-                    ListaUsuarioScreen(navController, usuarioViewModel)
+                    LaunchedEffect(Unit) {
+                        usuarioViewModel.cargarUsuarios()
+                    }
+                    val usuarios by usuarioViewModel.usuariosFiltrados.collectAsState()
+                    ListaUsuarioScreen(
+                        usuarios = usuarios,
+                        onEditar = { usuario ->
+                            navController.navigate(Routes.FormularioUsuario + "/${usuario.id}")
+                        },
+                        onEliminar = { usuario ->
+                            usuarioViewModel.eliminar(usuario.id)
+                        }
+                    )
                 }
 
-                // Ruta para crear un nuevo usuario (rut es nulo)
+                // Ruta para crear un nuevo usuario (id es nulo)
                 composable(Routes.FormularioUsuario) {
-                    FormUsuarioScreen(navController, usuarioViewModel, rut = null)
+                    FormUsuarioScreen(navController, usuarioViewModel, idUsuario = null)
                 }
 
-                // Ruta para editar un usuario existente (se pasa el rut)
+                // Ruta para editar un usuario existente (se pasa el id)
                 composable(
-                    route = Routes.FormularioUsuario + "/{rut}",
-                    arguments = listOf(navArgument("rut") { type = NavType.StringType })
+                    route = Routes.FormularioUsuario + "/{id}",
+                    arguments = listOf(navArgument("id") { type = NavType.IntType })
                 ) { backStackEntry ->
-                    val rut = backStackEntry.arguments?.getString("rut")
-                    FormUsuarioScreen(navController, usuarioViewModel, rut = rut)
+                    val id = backStackEntry.arguments?.getInt("id")
+                    FormUsuarioScreen(navController, usuarioViewModel, idUsuario = id)
                 }
             })
         }
