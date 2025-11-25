@@ -32,7 +32,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.ecomarketmovil.ui.viewmodels.UsuarioViewModel
+import com.example.ecomarketmovil.viewmodels.UsuarioViewModel
 
 @Composable
 fun FormUsuarioScreen(navController: NavController, viewModel: UsuarioViewModel, idUsuario: Int?) {

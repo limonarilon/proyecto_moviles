@@ -18,8 +18,9 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.ecomarketmovil.ui.Routes
 import com.example.ecomarketmovil.ui.screens.*
-import com.example.ecomarketmovil.ui.viewmodels.ProductoViewModel
-import com.example.ecomarketmovil.ui.viewmodels.UsuarioViewModel
+import com.example.ecomarketmovil.viewmodels.PedidoViewModel
+import com.example.ecomarketmovil.viewmodels.ProductoViewModel
+import com.example.ecomarketmovil.viewmodels.UsuarioViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +30,8 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val productoViewModel: ProductoViewModel = viewModel()
             val usuarioViewModel: UsuarioViewModel = viewModel()
+            val pedidoViewModel: PedidoViewModel = viewModel()
+
 
             NavHost(navController = navController, startDestination = Routes.Login, builder = {
                 composable(Routes.Login,){ 
@@ -96,6 +99,26 @@ class MainActivity : ComponentActivity() {
                             usuarioViewModel.eliminar(usuario.id)
                         }
                     )
+                }
+                composable( Routes.MenuPedido){
+                    Scaffold (Modifier.fillMaxSize()){ innerPadding ->
+                        MenuPedido(paddingValues = innerPadding, navController)
+                    }
+                }
+                composable(Routes.ListaPedidos) {
+                    ListaPedidoScreen(navController, pedidoViewModel)
+                }
+                //Ruta para crear un nuevo pedido (id es nulo)
+                composable(Routes.FormularioPedido) {
+                    FormPedidoScreen(navController, pedidoViewModel, productoViewModel, id = null)
+                }
+                //Ruta para editar un pedido existente (se pasa el id)
+                composable(
+                    route = Routes.FormularioPedido + "/{id}",
+                    arguments = listOf(navArgument("id") { type = NavType.IntType })
+                ) { backStackEntry ->
+                    val id = backStackEntry.arguments?.getInt("id")
+                    FormPedidoScreen(navController, pedidoViewModel, productoViewModel, id)
                 }
 
                 // Ruta para crear un nuevo usuario (id es nulo)

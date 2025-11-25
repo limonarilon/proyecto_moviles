@@ -1,4 +1,4 @@
-package com.example.ecomarketmovil.ui.viewmodels
+package com.example.ecomarketmovil.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

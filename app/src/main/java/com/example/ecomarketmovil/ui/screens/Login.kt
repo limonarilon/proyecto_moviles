@@ -32,13 +32,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.ecomarketmovil.ui.Routes
-import com.example.ecomarketmovil.ui.viewmodels.AuthViewModel
-import com.example.ecomarketmovil.ui.viewmodels.LoginState
+import com.example.ecomarketmovil.viewmodels.AuthViewModel
+import com.example.ecomarketmovil.viewmodels.LoginState
 
 @Composable
 fun Login(paddingValues: PaddingValues, navController: NavController, authViewModel: AuthViewModel = viewModel()) {
 
-    var email by remember { mutableStateOf("admin@ecomarket.com") } // Valor por defecto para pruebas
+    var email by remember { mutableStateOf("admin@test.com") } // Valor por defecto para pruebas
     var password by remember { mutableStateOf("hola123") } // Valor por defecto para pruebas
 
     val loginState by authViewModel.loginState.collectAsState()

@@ -2,11 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Permiso para acceder a Internet, necesario para la API del clima -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Permiso para acceder a la ubicación aproximada, para obtener el clima local -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <!-- Permiso para controlar la cámara, necesario para la funcionalidad de la linterna -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.flash" />
+
+    <!-- Permiso para leer el almacenamiento externo (aunque puede que no sea necesario con las prácticas modernas) -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".EcoMarketApp"
@@ -18,7 +24,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FerreteriaHogar"
-        android:networkSecurityConfig="@xml/network_security_config">
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
         <activity
             android:name=".MainActivity"
             android:exported="true"

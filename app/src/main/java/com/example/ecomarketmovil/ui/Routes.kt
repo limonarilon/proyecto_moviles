@@ -18,4 +18,10 @@ object Routes {
     var ListaProductos = "lista_productos"
     var FormularioProducto = "formulario_producto"
     fun formularioProductoConId(id: Int) = "$FormularioProducto/$id"
+
+    // --- Rutas de Pedido ---
+    var MenuPedido = "menu_pedido"
+    var ListaPedidos = "lista_pedidos"
+    var FormularioPedido = "formulario_pedido"
+    fun formularioPedidoConId(id: Int) = "$FormularioPedido/$id"
 }
