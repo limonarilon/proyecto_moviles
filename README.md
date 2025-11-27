@@ -1,4 +1,4 @@
-# EcoMarket Móvil – Desarrollo de aplicaciones móviles
+# EcoMarket Móvil  Desarrollo de aplicaciones móviles
 
 ## 1. Sobre el proyecto
 Este proyecto consiste en el desarrollo de una aplicación móvil basada en el patrón de arquitectura **Modelo–Vista–Modelo de Vista (MVVM)**.  
@@ -201,7 +201,7 @@ Incluye:
 
 ---
 
-### 5.6 Barra superior — Misión y Visión
+### 5.6 Barra superior Misión y Visión
 Accesible desde cualquier pantalla. Muestra información institucional:
 
 - Misión de EcoMarket
