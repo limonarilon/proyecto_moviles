@@ -37,6 +37,21 @@ import com.example.ecomarketmovil.R
 import com.example.ecomarketmovil.ui.Routes
 import com.example.ecomarketmovil.viewmodels.AuthViewModel
 import com.example.ecomarketmovil.viewmodels.LoginState
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.example.ecomarketmovil.remote.RetrofitClientWeather
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 @Composable
 fun Login(paddingValues: PaddingValues, navController: NavController, authViewModel: AuthViewModel = viewModel()) {
@@ -45,11 +60,45 @@ fun Login(paddingValues: PaddingValues, navController: NavController, authViewMo
     var password by remember { mutableStateOf("hola123") } // Valor por defecto para pruebas
 
     val loginState by authViewModel.loginState.collectAsState()
+    var showSuccessAnimation by remember { mutableStateOf(false) }
+    var temperature by remember { mutableStateOf<Float?>(null) }
+    var weatherLoading by remember { mutableStateOf(true) }
+    var weatherError by remember { mutableStateOf<String?>(null) }
+    var apiKey= "o1fziqhj6atwpfnflwamx03abfycy7nwv4wwnkvf"
 
     // Observador para manejar la navegación o mostrar errores
-    LaunchedEffect(loginState) {
+   LaunchedEffect(Unit) {
+       if (apiKey == "YOUR_API_KEY") {
+           println("ADVERTENCIA: La API Key de Meteosource no ha sido configurada.")
+           return@LaunchedEffect
+       }
+       try {
+           val response = withContext(Dispatchers.IO) {
+               RetrofitClientWeather.apiWeather.getWeather(
+                   lat = "-33.44",      // Latitud de Santiago
+                   lon = "-70.66",      // Longitud de Santiago
+                   apiKey = apiKey
+               )
+           }
+               if (response.isSuccessful) {
+                   temperature = response.body()?.current?.temperature
+               } else {
+                   weatherError = "Error al obtener clima: ${response.message()}"
+               }
+           } catch (e: Exception) {
+               weatherError = "Error de conexión: ${e.localizedMessage}"
+           } finally {
+               weatherLoading = false
+           }
+       }
+
+
+
+       LaunchedEffect(loginState) {
         when (val state = loginState) {
             is LoginState.Success -> {
+                showSuccessAnimation = true // Activa la animación
+                delay(1500)
                 // Navegamos al menú principal. Pasamos el email y el rol para uso futuro.
                 // El password ya no es necesario aquí.
                 navController.navigate(Routes.MainMenu + "/$email/${state.role}") {
@@ -64,6 +113,19 @@ fun Login(paddingValues: PaddingValues, navController: NavController, authViewMo
         }
     }
 
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFFa7dc8f),
+                        Color.LightGray
+                    )
+                )
+            )
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -72,6 +134,26 @@ fun Login(paddingValues: PaddingValues, navController: NavController, authViewMo
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
+        Spacer(modifier = Modifier.height(16.dp))
+        if (weatherLoading) {
+            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+        } else if (weatherError != null) {
+            Text(
+                text = weatherError!!,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        } else {
+            temperature?.let {
+                Text(
+                    text = "Temperatura actual: ${it}°C",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
+
 
         Image(
             painter = painterResource(id = R.drawable.logo),
@@ -106,10 +188,42 @@ fun Login(paddingValues: PaddingValues, navController: NavController, authViewMo
         // Lógica condicional para el botón y el feedback
         when (loginState) {
             is LoginState.Loading -> {
-                CircularProgressIndicator()
+                CircularProgressIndicator() // Animación de carga durante el proceso
             }
             else -> {
                 if (loginState is LoginState.Error) {
+                    AnimatedVisibility(
+                        visible = true,
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
+                        Text(
+                            text = (loginState as LoginState.Error).message,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                    }
+                }
+
+                // Animación post-login: solo se muestra cuando showSuccessAnimation es true
+                AnimatedVisibility(
+                    visible = showSuccessAnimation,
+                    enter = fadeIn() + slideInVertically(),
+                    exit = fadeOut() + slideOutVertically()
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = "¡Login exitoso! Redirigiendo...",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp)) // Spinner pequeño para reforzar
+                    }
+                }
+
+                // Botón solo visible si no hay loading ni animación de éxito
+                if (!showSuccessAnimation && loginState is LoginState.Error) {
                     Text(
                         text = (loginState as LoginState.Error).message,
                         color = MaterialTheme.colorScheme.error,
