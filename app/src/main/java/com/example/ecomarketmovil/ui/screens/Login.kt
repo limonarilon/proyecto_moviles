@@ -1,5 +1,6 @@
 package com.example.ecomarketmovil.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,11 +27,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.ecomarketmovil.R
 import com.example.ecomarketmovil.ui.Routes
 import com.example.ecomarketmovil.viewmodels.AuthViewModel
 import com.example.ecomarketmovil.viewmodels.LoginState
@@ -69,6 +72,14 @@ fun Login(paddingValues: PaddingValues, navController: NavController, authViewMo
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "Logo de la marca",
+            modifier = Modifier
+                .fillMaxWidth(0.5f) // Ocupa el 50% del ancho
+                .padding(bottom = 32.dp)
+        )
 
         Text("Iniciar Sesión", style = MaterialTheme.typography.headlineLarge)
         Spacer(modifier = Modifier.height(32.dp))

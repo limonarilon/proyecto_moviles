@@ -256,15 +256,7 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
                         Text(text = if (isTorchOn) "Off" else "On", style = TextStyle(fontSize = 21.sp))
                     }
 
-                    Button(
-                        onClick = {},
-                        Modifier.weight(1f).height(52.dp).padding(start = 8.dp),
-                        shape = RoundedCornerShape(25.dp),
-                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp, pressedElevation = 8.dp),
-                        colors = ButtonDefaults.buttonColors(Color(0xFF053900), Color.White)
-                    ) {
-                        Text(text = "Boton 5", style = TextStyle(fontSize = 21.sp))
-                    }
+
                 }
             }
 
