@@ -10,7 +10,8 @@
 
     <!-- Permiso para controlar la cámara, necesario para la funcionalidad de la linterna -->
     <uses-permission android:name="android.permission.CAMERA" />
-
+    <!-- Permiso para leer el almacenamiento interno -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <!-- Permiso para leer el almacenamiento externo (aunque puede que no sea necesario con las prácticas modernas) -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 

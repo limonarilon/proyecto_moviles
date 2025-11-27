@@ -45,7 +45,7 @@ fun ListaProductosScreen(navController: NavController, viewModel: ProductoViewMo
     Scaffold(
         floatingActionButton = {
             // Navega al formulario en modo "crear" (id nulo)
-            FloatingActionButton(onClick = { navController.navigate(Routes.FormularioProducto + "/null") }) {
+            FloatingActionButton(onClick = { navController.navigate(Routes.FormularioProducto + "/-1") }) {
                 Text("+")
             }
         }

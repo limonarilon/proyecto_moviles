@@ -1,5 +1,7 @@
 package com.example.ecomarketmovil.viewmodels
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ecomarketmovil.data.Producto
@@ -51,7 +53,9 @@ class ProductoViewModel(private val repository: ProductoRepository = ProductoRep
         precioStr: String,
         stockStr: String,
         img: String?,
-        expirationDate: String?
+        expirationDate: String?,
+        imgUri: Uri?,
+        context: Context
     ) {
         _mensajeError.value = null
         if (nombre.isBlank() || precioStr.isBlank() || stockStr.isBlank()) {
@@ -67,23 +71,44 @@ class ProductoViewModel(private val repository: ProductoRepository = ProductoRep
             return
         }
 
+        //  mantener imagen previa si no se seleccionó nueva
+        val imagenFinal = if (imgUri != null) {
+            // Si hay imgUri, subiremos multipart; dejar img en null para que backend tome la imagen nueva
+            null
+        } else {
+            // Si NO hay imgUri, mantener la imagen previa
+            img
+        }
+
         val registro = ProductoRegistro(
             nombre = nombre,
             precio = precio,
             stock = stock,
-            img = img,
+            img = imagenFinal,
             expirationDate = expirationDate
         )
 
+
         viewModelScope.launch {
-            val result = if (id == null) repository.createProducto(registro) else repository.updateProducto(id, registro)
+
+            val esNuevo = id == null || id == -1
+
+            val result = if (esNuevo) {
+                // Crear producto: enviar multipart (JSON + imgUri)
+                repository.createProducto(registro, imgUri, context)
+            } else {
+                // Actualizar producto: PUT usando el id real
+                repository.updateProducto(id!!, registro)
+            }
+
             result.onSuccess {
-                cargarProductos() // Recargar la lista
+                cargarProductos()//Recarga la lista
                 _navegacionExitosa.value = true
             }.onFailure {
                 _mensajeError.value = "Error al guardar el producto: ${it.message}"
             }
         }
+
     }
 
     fun eliminar(id: Int) {
@@ -104,4 +129,16 @@ class ProductoViewModel(private val repository: ProductoRepository = ProductoRep
     fun onNavegacionCompleta() {
         _navegacionExitosa.value = false
     }
+
+    private val _productoSeleccionado = MutableStateFlow<Producto?>(null)
+    val productoSeleccionado = _productoSeleccionado.asStateFlow()
+
+    fun cargarProductoPorId(id: Int) {
+        viewModelScope.launch {
+            val result = repository.getProductoById(id)
+            result.onSuccess { _productoSeleccionado.value = it }
+                .onFailure { _mensajeError.value = "Error al cargar producto: ${it.message}" }
+        }
+    }
+
 }

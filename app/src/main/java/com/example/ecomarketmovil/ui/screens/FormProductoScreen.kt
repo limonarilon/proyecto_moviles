@@ -67,6 +67,7 @@ fun FormProductoScreen(navController: NavController, viewModel: ProductoViewMode
     var stock by remember { mutableStateOf("") }
     var img by remember { mutableStateOf("") }
     var expirationDate by remember { mutableStateOf("") }
+    var imgUri by remember { mutableStateOf<Uri?>(null) }
 
     var categoria by remember { mutableStateOf("Seleccionar…") }
     var destacado by remember { mutableStateOf(false) }
@@ -77,7 +78,8 @@ fun FormProductoScreen(navController: NavController, viewModel: ProductoViewMode
     val datePickerState = rememberDatePickerState()
     var expanded by remember { mutableStateOf(false) }
 
-    val esNuevo = id == null
+    val esNuevo = id == null || id == -1
+
     val context = LocalContext.current
 
     val mensajeError by viewModel.mensajeError.collectAsState()
@@ -87,8 +89,9 @@ fun FormProductoScreen(navController: NavController, viewModel: ProductoViewMode
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         if (uri != null) {
-            imageModel = uri
+            imgUri = uri
             img = uri.lastPathSegment?.substringAfterLast('/') ?: "imagen.jpg"
+            imageModel = uri
         }
     }
 
@@ -107,21 +110,24 @@ fun FormProductoScreen(navController: NavController, viewModel: ProductoViewMode
 
     LaunchedEffect(id) {
         if (!esNuevo) {
-            val producto = viewModel.obtenerPorIdLocal(id!!)
-            if (producto != null) {
-                // --- LÓGICA CORREGIDA ANTI-NULL ---
-                nombre = producto.nombre ?: ""
-                precio = producto.precio.toString()
-                stock = producto.stock.toString()
-                img = producto.img ?: ""
-                expirationDate = producto.expirationDate ?: ""
-
-                if (img.isNotBlank()) {
-                    imageModel = BASE_IMAGE_URL + img
-                }
-            }
+            viewModel.cargarProductoPorId(id!!)
         }
     }
+
+    val productoCargado by viewModel.productoSeleccionado.collectAsState()
+
+    LaunchedEffect(productoCargado) {
+        val p = productoCargado ?: return@LaunchedEffect
+
+        nombre = p.nombre ?: ""
+        precio = p.precio.toString()
+        stock = p.stock.toString()
+        img = p.img ?: ""
+        expirationDate = p.expirationDate ?: ""
+
+        imageModel = if (img.isNotBlank()) BASE_IMAGE_URL + img else null
+    }
+
 
     Scaffold {
         Column(
@@ -145,13 +151,21 @@ fun FormProductoScreen(navController: NavController, viewModel: ProductoViewMode
             )
 
             Button(onClick = {
-                when (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    PackageManager.PERMISSION_GRANTED -> imagePickerLauncher.launch("image/*")
-                    else -> permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                val permission = if (android.os.Build.VERSION.SDK_INT >= 33)
+                    Manifest.permission.READ_MEDIA_IMAGES
+                else
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+
+                when (ContextCompat.checkSelfPermission(context, permission)) {
+                    PackageManager.PERMISSION_GRANTED ->
+                        imagePickerLauncher.launch("image/*")
+                    else ->
+                        permissionLauncher.launch(permission)
                 }
             }) {
                 Text("Seleccionar Imagen")
             }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(value = nombre, onValueChange = { nombre = it }, label = { Text("Nombre del producto") }, modifier = Modifier.fillMaxWidth())
@@ -182,7 +196,7 @@ fun FormProductoScreen(navController: NavController, viewModel: ProductoViewMode
             Box {
                 OutlinedTextField(value = categoria, onValueChange = {}, readOnly = true, modifier = Modifier.fillMaxWidth().clickable { expanded = true }, label = { Text("Categoría") })
                 DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    listOf("Abarrotes", "Lácteos", "Frutas", "Bebidas").forEach { opt ->
+                    listOf("Salado", "Dulce", "Integral", "Bebestibles").forEach { opt ->
                         DropdownMenuItem(text = { Text(opt) }, onClick = { categoria = opt; expanded = false })
                     }
                 }
@@ -198,7 +212,7 @@ fun FormProductoScreen(navController: NavController, viewModel: ProductoViewMode
 
             mensajeError?.let { Text(text = it, color = Color.Red, modifier = Modifier.padding(bottom = 8.dp)) }
             Button(
-                onClick = { viewModel.validarYGuardar(id, nombre, precio, stock, img, expirationDate) },
+                onClick = { viewModel.validarYGuardar(id, nombre, precio, stock, img, expirationDate, imgUri, context) },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF053900), contentColor = Color.White)
             ) { Text("Guardar") }

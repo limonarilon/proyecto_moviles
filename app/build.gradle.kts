@@ -46,6 +46,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+
+}
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 dependencies {
@@ -57,7 +62,25 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
+
+    // Dependencias para Pruebas Unitarias
+    // JUnit 5 (Jupiter) para el motor de pruebas
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
+
+    // Kotest
+    testImplementation("io.kotest:kotest-runner-junit5:5.5.4")
+    testImplementation("io.kotest:kotest-framework-engine:5.5.4") //pa que corra se supone
+
+    testImplementation("io.kotest:kotest-assertions-core:5.5.4")
+
+    // MockK para simular dependencias (mocks) en Kotlin
+    testImplementation("io.mockk:mockk:1.13.3")
+
+    // coroutines test por ahora solo para usar runTest, es necesaria para kotest y StateFlowStateFlow tambien
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -76,4 +99,5 @@ dependencies {
 
     // Coil para carga de imágenes (forma correcta usando el catálogo de versiones)
     implementation(libs.coil.compose)
+
 }
