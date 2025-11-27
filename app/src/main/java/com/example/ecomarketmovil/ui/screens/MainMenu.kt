@@ -15,11 +15,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -46,12 +48,15 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.ecomarketmovil.remote.RetrofitClientWeather
 import com.example.ecomarketmovil.ui.Routes
 import com.example.ecomarketmovil.ui.components.NavBar
 import com.example.ecomarketmovil.viewmodels.UiState
 import com.example.ecomarketmovil.viewmodels.WeatherViewModel
 import com.example.ecomarketmovil.utils.Torch
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,45 +65,37 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
     val context = LocalContext.current
     val torch = remember { Torch(context) }
     var isTorchOn by remember { mutableStateOf(false) }
-    val weatherViewModel: WeatherViewModel = viewModel()
-    val weatherData by weatherViewModel.weatherData.collectAsState()
-    val uiState by weatherViewModel.uiState.collectAsState()
+    var temperature by remember { mutableStateOf<Float?>(null) }
+    var weatherLoading by remember { mutableStateOf(true) }
+    var weatherError by remember { mutableStateOf<String?>(null) }
+    var apiKey= "o1fziqhj6atwpfnflwamx03abfycy7nwv4wwnkvf"
 
-    val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
-
-    val locationPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { isGranted ->
-            if (isGranted) {
-                // Permiso concedido, intenta obtener la ubicación de nuevo
-                if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                        location?.let {
-                            weatherViewModel.fetchWeatherData(it.latitude.toString(), it.longitude.toString())
-                        } ?: weatherViewModel.onLocationUnavailable()
-                    }
-                }
-            } else {
-                // Permiso denegado
-                weatherViewModel.onLocationUnavailable()
-            }
-        }
-    )
-
+    // Observador para manejar la navegación o mostrar errores
     LaunchedEffect(Unit) {
-        when (PackageManager.PERMISSION_GRANTED) {
-            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) -> {
-                fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                    location?.let {
-                        weatherViewModel.fetchWeatherData(it.latitude.toString(), it.longitude.toString())
-                    } ?: weatherViewModel.onLocationUnavailable()
-                }
+        if (apiKey == "YOUR_API_KEY") {
+            println("ADVERTENCIA: La API Key de Meteosource no ha sido configurada.")
+            return@LaunchedEffect
+        }
+        try {
+            val response = withContext(Dispatchers.IO) {
+                RetrofitClientWeather.apiWeather.getWeather(
+                    lat = "-33.44",      // Latitud de Santiago
+                    lon = "-70.66",      // Longitud de Santiago
+                    apiKey = apiKey
+                )
             }
-            else -> {
-                locationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+            if (response.isSuccessful) {
+                temperature = response.body()?.current?.temperature
+            } else {
+                weatherError = "Error al obtener clima: ${response.message()}"
             }
+        } catch (e: Exception) {
+            weatherError = "Error de conexión: ${e.localizedMessage}"
+        } finally {
+            weatherLoading = false
         }
     }
+
 
     // Apagar la linterna cuando el composable se va
     DisposableEffect(Unit) {
@@ -147,33 +144,21 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
 
             Spacer(Modifier.height(80.dp))
 
-            when (val state = uiState) {
-                is UiState.Loading -> {
-                    CircularProgressIndicator()
-                }
-                is UiState.Success -> {
-                    weatherData?.current?.let {
-                        Text(
-                            text = "Temperatura actual: ${it.temperature}°C",
-                            style = TextStyle(
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                textAlign = TextAlign.Center
-                            ),
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
-                    }
-                }
-                is UiState.Error -> {
+            Spacer(modifier = Modifier.height(16.dp))
+            if (weatherLoading) {
+                CircularProgressIndicator(modifier = Modifier.size(24.dp))
+            } else if (weatherError != null) {
+                Text(
+                    text = weatherError!!,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            } else {
+                temperature?.let {
                     Text(
-                        text = state.message,
-                        style = TextStyle(
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            textAlign = TextAlign.Center,
-                            color = Color.Red
-                        ),
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        text = "Temperatura actual: ${it}°C",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
