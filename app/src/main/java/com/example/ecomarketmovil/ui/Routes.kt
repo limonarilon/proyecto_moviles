@@ -3,6 +3,7 @@ package com.example.ecomarketmovil.ui
 object Routes {
     var Login = "login"
     var MainMenu = "mainMenu"
+    var OlvidarPassword = "olvidarPassword"
     var Mision = "mision"
     var Vision = "vision"
     var Register = "register"

@@ -34,6 +34,51 @@ class AuthViewModel(private val repository: AuthRepository = AuthRepository()) :
     fun resetLoginState() {
         _loginState.value = LoginState.Idle
     }
+
+
+
+    // Sealed class para representar los estados del proceso de login
+    sealed class LoginState {
+        object Idle : LoginState()
+        object Loading : LoginState()
+        data class Success(val role: String) : LoginState()
+        data class Error(val message: String) : LoginState()
+    }
+
+    //sealed class para el olvido de contraseña
+    sealed class PasswordResetState {
+        object Idle : PasswordResetState()
+        object Loading : PasswordResetState()
+        object Success : PasswordResetState()
+        data class Error(val message: String) : PasswordResetState()
+    }
+    private val _passwordResetState = MutableStateFlow<PasswordResetState>(PasswordResetState.Idle)
+    val passwordResetState = _passwordResetState.asStateFlow()
+    fun sendPasswordResetEmail(email: String) {
+        viewModelScope.launch {
+            if (email.isBlank() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                _passwordResetState.value = PasswordResetState.Error("Por favor, ingresa un email válido.")
+                return@launch
+            }
+
+            _passwordResetState.value = PasswordResetState.Loading
+            try {	//llamada al backend
+
+                kotlinx.coroutines.delay(2000)
+
+                _passwordResetState.value = PasswordResetState.Success
+
+            } catch (e: Exception) {
+                //errores de red o de la API
+                _passwordResetState.value = PasswordResetState.Error(e.message ?: "Ocurrió un error desconocido.")
+            }
+        }
+    }
+
+    fun resetPasswordState() {
+        _passwordResetState.value = PasswordResetState.Idle
+    }
+
 }
 
 // Sealed class para representar los estados del proceso de login

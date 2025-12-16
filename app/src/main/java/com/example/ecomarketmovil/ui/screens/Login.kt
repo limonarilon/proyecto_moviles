@@ -244,6 +244,14 @@ fun Login(paddingValues: PaddingValues, navController: NavController, authViewMo
             }
         }
 
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "¿Olvidaste tu contraseña?",
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.clickable { navController.navigate(Routes.OlvidarPassword) }
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(

@@ -42,6 +42,14 @@ class MainActivity : ComponentActivity() {
                 composable (Routes.Register ){
                     FormularioScreen(navController)
                 }
+
+                composable(Routes.OlvidarPassword) {
+                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                        OlvidarPassword(paddingValues = innerPadding, navController = navController)
+                    }
+                }
+
+
                 composable(Routes.MainMenu+"/{user}"+"/{passwordHashed}",){ 
                     val user = it.arguments?.getString("user")
                     val passwordHashed = it.arguments?.getString("passwordHashed")
