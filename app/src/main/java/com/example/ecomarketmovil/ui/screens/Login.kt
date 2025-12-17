@@ -36,7 +36,7 @@ import androidx.navigation.NavController
 import com.example.ecomarketmovil.R
 import com.example.ecomarketmovil.ui.Routes
 import com.example.ecomarketmovil.viewmodels.AuthViewModel
-import com.example.ecomarketmovil.viewmodels.LoginState
+import com.example.ecomarketmovil.viewmodels.AuthViewModel.LoginState
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -56,8 +56,8 @@ import kotlinx.coroutines.withContext
 @Composable
 fun Login(paddingValues: PaddingValues, navController: NavController, authViewModel: AuthViewModel = viewModel()) {
 
-    var email by remember { mutableStateOf("admin@test.com") } // Valor por defecto para pruebas
-    var password by remember { mutableStateOf("hola123") } // Valor por defecto para pruebas
+    var email by remember { mutableStateOf("admin@ecomarket.com") } // Valor por defecto para pruebas
+    var password by remember { mutableStateOf("Claveadmin123") } // Valor por defecto para pruebas
 
     val loginState by authViewModel.loginState.collectAsState()
     var showSuccessAnimation by remember { mutableStateOf(false) }
@@ -66,42 +66,38 @@ fun Login(paddingValues: PaddingValues, navController: NavController, authViewMo
     var weatherError by remember { mutableStateOf<String?>(null) }
     var apiKey= "o1fziqhj6atwpfnflwamx03abfycy7nwv4wwnkvf"
 
-    // Observador para manejar la navegación o mostrar errores
-   LaunchedEffect(Unit) {
-       if (apiKey == "YOUR_API_KEY") {
-           println("ADVERTENCIA: La API Key de Meteosource no ha sido configurada.")
-           return@LaunchedEffect
-       }
-       try {
-           val response = withContext(Dispatchers.IO) {
-               RetrofitClientWeather.apiWeather.getWeather(
-                   lat = "-33.44",      // Latitud de Santiago
-                   lon = "-70.66",      // Longitud de Santiago
-                   apiKey = apiKey
-               )
-           }
-               if (response.isSuccessful) {
-                   temperature = response.body()?.current?.temperature
-               } else {
-                   weatherError = "Error al obtener clima: ${response.message()}"
-               }
-           } catch (e: Exception) {
-               weatherError = "Error de conexión: ${e.localizedMessage}"
-           } finally {
-               weatherLoading = false
-           }
-       }
+    LaunchedEffect(Unit) {
+        if (apiKey == "YOUR_API_KEY") {
+            println("ADVERTENCIA: La API Key de Meteosource no ha sido configurada.")
+            return@LaunchedEffect
+        }
+        try {
+            val response = withContext(Dispatchers.IO) {
+                RetrofitClientWeather.apiWeather.getWeather(
+                    lat = "-33.44",      // Latitud de Santiago
+                    lon = "-70.66",      // Longitud de Santiago
+                    apiKey = apiKey
+                )
+            }
+            if (response.isSuccessful) {
+                temperature = response.body()?.current?.temperature
+            } else {
+                weatherError = "Error al obtener clima: ${response.message()}"
+            }
+        } catch (e: Exception) {
+            weatherError = "Error de conexión: ${e.localizedMessage}"
+        } finally {
+            weatherLoading = false
+        }
+    }
 
-
-
-       LaunchedEffect(loginState) {
-        when (val state = loginState) {
+    LaunchedEffect(loginState) {
+        when (loginState) {
             is LoginState.Success -> {
                 showSuccessAnimation = true // Activa la animación
                 delay(1500)
-                // Navegamos al menú principal. Pasamos el email y el rol para uso futuro.
-                // El password ya no es necesario aquí.
-                navController.navigate(Routes.MainMenu + "/$email/${state.role}") {
+                // Navegación simplificada: Solo pasamos el email del usuario.
+                navController.navigate(Routes.MainMenu + "/$email") {
                     popUpTo(Routes.Login) { inclusive = true } // Limpiar el backstack
                 }
                 authViewModel.resetLoginState() // Limpiar el estado para futuras navegaciones
@@ -185,10 +181,9 @@ fun Login(paddingValues: PaddingValues, navController: NavController, authViewMo
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Lógica condicional para el botón y el feedback
         when (loginState) {
             is LoginState.Loading -> {
-                CircularProgressIndicator() // Animación de carga durante el proceso
+                CircularProgressIndicator()
             }
             else -> {
                 if (loginState is LoginState.Error) {
@@ -205,7 +200,6 @@ fun Login(paddingValues: PaddingValues, navController: NavController, authViewMo
                     }
                 }
 
-                // Animación post-login: solo se muestra cuando showSuccessAnimation es true
                 AnimatedVisibility(
                     visible = showSuccessAnimation,
                     enter = fadeIn() + slideInVertically(),
@@ -218,28 +212,22 @@ fun Login(paddingValues: PaddingValues, navController: NavController, authViewMo
                             style = MaterialTheme.typography.bodyLarge
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        CircularProgressIndicator(modifier = Modifier.size(24.dp)) // Spinner pequeño para reforzar
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
                     }
                 }
 
-                // Botón solo visible si no hay loading ni animación de éxito
-                if (!showSuccessAnimation && loginState is LoginState.Error) {
-                    Text(
-                        text = (loginState as LoginState.Error).message,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                }
-
-                Button(
-                    onClick = { authViewModel.login(email, password) },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF053900),
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text("Ingresar")
+                if (!showSuccessAnimation) {
+                    Button(
+                        onClick = { authViewModel.login(email, password) },
+                        enabled = loginState !is LoginState.Loading, // Deshabilita el botón mientras carga
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF053900),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text("Ingresar")
+                    }
                 }
             }
         }

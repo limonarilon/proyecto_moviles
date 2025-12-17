@@ -22,9 +22,10 @@ class AuthViewModel(private val repository: AuthRepository = AuthRepository()) :
             val result = repository.login(request)
 
             result.onSuccess { response ->
-                // Guardar el token usando el AuthManager
+                // Guardar el token. AuthManager se encargará de decodificar y guardar los roles.
                 EcoMarketApp.authManager.saveToken(response.token)
-                _loginState.value = LoginState.Success(response.role)
+                // El estado de éxito ya no necesita el rol, solo notifica que el login fue correcto.
+                _loginState.value = LoginState.Success
             }.onFailure { error ->
                 _loginState.value = LoginState.Error(error.message ?: "Ocurrió un error")
             }
@@ -35,13 +36,11 @@ class AuthViewModel(private val repository: AuthRepository = AuthRepository()) :
         _loginState.value = LoginState.Idle
     }
 
-
-
     // Sealed class para representar los estados del proceso de login
     sealed class LoginState {
         object Idle : LoginState()
         object Loading : LoginState()
-        data class Success(val role: String) : LoginState()
+        object Success : LoginState() // Ya no contiene el rol
         data class Error(val message: String) : LoginState()
     }
 
@@ -79,12 +78,4 @@ class AuthViewModel(private val repository: AuthRepository = AuthRepository()) :
         _passwordResetState.value = PasswordResetState.Idle
     }
 
-}
-
-// Sealed class para representar los estados del proceso de login
-sealed class LoginState {
-    object Idle : LoginState()
-    object Loading : LoginState()
-    data class Success(val role: String) : LoginState()
-    data class Error(val message: String) : LoginState()
 }

@@ -100,4 +100,10 @@ dependencies {
     // Coil para carga de imágenes (forma correcta usando el catálogo de versiones)
     implementation(libs.coil.compose)
 
+    // JWT y Seguridad
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    implementation("androidx.security:security-crypto:1.0.0")
+
 }

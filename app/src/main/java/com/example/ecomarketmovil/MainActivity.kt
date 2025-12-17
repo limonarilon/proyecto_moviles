@@ -17,6 +17,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.ecomarketmovil.ui.Routes
+import com.example.ecomarketmovil.ui.auth.RequireAnyRole
+import com.example.ecomarketmovil.ui.auth.RequireRole
 import com.example.ecomarketmovil.ui.screens.*
 import com.example.ecomarketmovil.viewmodels.PedidoViewModel
 import com.example.ecomarketmovil.viewmodels.ProductoViewModel
@@ -34,7 +36,7 @@ class MainActivity : ComponentActivity() {
 
 
             NavHost(navController = navController, startDestination = Routes.Login, builder = {
-                composable(Routes.Login,){ 
+                composable(Routes.Login,) { 
                     Scaffold(Modifier.fillMaxSize()) { innerPadding ->
                         Login(paddingValues = innerPadding, navController)
                     }
@@ -49,14 +51,14 @@ class MainActivity : ComponentActivity() {
                     }
                 }
 
-
-                composable(Routes.MainMenu+"/{user}"+"/{passwordHashed}",){ 
-                    val user = it.arguments?.getString("user")
-                    val passwordHashed = it.arguments?.getString("passwordHashed")
+                // Ruta simplificada para el Menú Principal
+                composable(Routes.MainMenu + "/{user}") { backStackEntry ->
+                    val user = backStackEntry.arguments?.getString("user") ?: "Usuario"
                     Scaffold(Modifier.fillMaxSize()) { innerPadding ->
-                        MainMenu(paddingValues = innerPadding, user?:"Error", passwordHashed?:"No" , navController)
+                        MainMenu(paddingValues = innerPadding, user = user, navController = navController)
                     }
                 }
+
                 composable( Routes.Mision, ) { 
                     Scaffold (Modifier.fillMaxSize()){ innerPadding ->
                         Mision(paddingValues = innerPadding, navController)
@@ -84,41 +86,53 @@ class MainActivity : ComponentActivity() {
                     })
                 ) {
                     val id = it.arguments?.getInt("id") ?: -1
-                    FormProductoScreen(navController, productoViewModel, id)
+                    RequireAnyRole(navController, setOf("ADMIN", "GERENTE")) {
+                        FormProductoScreen(navController, productoViewModel, id)
+                    }
                 }
 
                 composable( Routes.MenuUsuario){
                     Scaffold (Modifier.fillMaxSize()){ innerPadding ->
-                        MenuUsuario(paddingValues = innerPadding, navController)
+                        RequireRole(navController, "ADMIN") { // MODIFICADO: Solo ADMIN
+                            MenuUsuario(paddingValues = innerPadding, navController)
+                        }
                     }
                 }
 
                 composable(Routes.ListaUsuarios) {
-                    LaunchedEffect(Unit) {
-                        usuarioViewModel.cargarUsuarios()
-                    }
-                    val usuarios by usuarioViewModel.usuariosFiltrados.collectAsState()
-                    ListaUsuarioScreen(
-                        usuarios = usuarios,
-                        onEditar = { usuario ->
-                            navController.navigate(Routes.FormularioUsuario + "/${usuario.id}")
-                        },
-                        onEliminar = { usuario ->
-                            usuarioViewModel.eliminar(usuario.id)
+                    RequireRole(navController, "ADMIN") { // MODIFICADO: Solo ADMIN
+                        LaunchedEffect(Unit) {
+                            usuarioViewModel.cargarUsuarios()
                         }
-                    )
+                        val usuarios by usuarioViewModel.usuariosFiltrados.collectAsState()
+                        ListaUsuarioScreen(
+                            usuarios = usuarios,
+                            onEditar = { usuario ->
+                                navController.navigate(Routes.FormularioUsuario + "/${usuario.id}")
+                            },
+                            onEliminar = { usuario ->
+                                usuarioViewModel.eliminar(usuario.id)
+                            }
+                        )
+                    }
                 }
                 composable( Routes.MenuPedido){
                     Scaffold (Modifier.fillMaxSize()){ innerPadding ->
-                        MenuPedido(paddingValues = innerPadding, navController)
+                        RequireAnyRole(navController, setOf("ADMIN", "GERENTE", "LOGISTICA")) {
+                            MenuPedido(paddingValues = innerPadding, navController)
+                        }
                     }
                 }
                 composable(Routes.ListaPedidos) {
-                    ListaPedidoScreen(navController, pedidoViewModel)
+                     RequireAnyRole(navController, setOf("ADMIN", "GERENTE", "LOGISTICA")) {
+                        ListaPedidoScreen(navController, pedidoViewModel)
+                    }
                 }
                 //Ruta para crear un nuevo pedido (id es nulo)
                 composable(Routes.FormularioPedido) {
-                    FormPedidoScreen(navController, pedidoViewModel, productoViewModel, id = null)
+                    RequireAnyRole(navController, setOf("ADMIN", "GERENTE", "LOGISTICA")) {
+                        FormPedidoScreen(navController, pedidoViewModel, productoViewModel, id = null)
+                    }
                 }
                 //Ruta para editar un pedido existente (se pasa el id)
                 composable(
@@ -126,12 +140,16 @@ class MainActivity : ComponentActivity() {
                     arguments = listOf(navArgument("id") { type = NavType.IntType })
                 ) { backStackEntry ->
                     val id = backStackEntry.arguments?.getInt("id")
-                    FormPedidoScreen(navController, pedidoViewModel, productoViewModel, id)
+                    RequireAnyRole(navController, setOf("ADMIN", "GERENTE", "LOGISTICA")) {
+                        FormPedidoScreen(navController, pedidoViewModel, productoViewModel, id)
+                    }
                 }
 
                 // Ruta para crear un nuevo usuario (id es nulo)
                 composable(Routes.FormularioUsuario) {
-                    FormUsuarioScreen(navController, usuarioViewModel, idUsuario = null)
+                    RequireRole(navController, "ADMIN") {
+                        FormUsuarioScreen(navController, usuarioViewModel, idUsuario = null)
+                    }
                 }
 
                 // Ruta para editar un usuario existente (se pasa el id)
@@ -140,7 +158,9 @@ class MainActivity : ComponentActivity() {
                     arguments = listOf(navArgument("id") { type = NavType.IntType })
                 ) { backStackEntry ->
                     val id = backStackEntry.arguments?.getInt("id")
-                    FormUsuarioScreen(navController, usuarioViewModel, idUsuario = id)
+                    RequireRole(navController, "ADMIN") {
+                        FormUsuarioScreen(navController, usuarioViewModel, idUsuario = id)
+                    }
                 }
             })
         }

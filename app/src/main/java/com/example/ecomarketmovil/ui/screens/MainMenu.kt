@@ -26,7 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,32 +44,31 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.ecomarketmovil.data.AuthManager
 import com.example.ecomarketmovil.remote.RetrofitClientWeather
 import com.example.ecomarketmovil.ui.Routes
 import com.example.ecomarketmovil.ui.components.NavBar
-import com.example.ecomarketmovil.viewmodels.UiState
-import com.example.ecomarketmovil.viewmodels.WeatherViewModel
 import com.example.ecomarketmovil.utils.Torch
-import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : String , navController : NavController){
+fun MainMenu(paddingValues: PaddingValues, user: String, navController: NavController) {
 
     val context = LocalContext.current
+    val authManager = remember { AuthManager(context) }
+    val isAdmin = authManager.hasRole("ADMIN")
+
     val torch = remember { Torch(context) }
     var isTorchOn by remember { mutableStateOf(false) }
     var temperature by remember { mutableStateOf<Float?>(null) }
     var weatherLoading by remember { mutableStateOf(true) }
     var weatherError by remember { mutableStateOf<String?>(null) }
-    var apiKey= "o1fziqhj6atwpfnflwamx03abfycy7nwv4wwnkvf"
+    val apiKey = "o1fziqhj6atwpfnflwamx03abfycy7nwv4wwnkvf"
 
-    // Observador para manejar la navegación o mostrar errores
     LaunchedEffect(Unit) {
         if (apiKey == "YOUR_API_KEY") {
             println("ADVERTENCIA: La API Key de Meteosource no ha sido configurada.")
@@ -95,7 +93,6 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
             weatherLoading = false
         }
     }
-
 
     // Apagar la linterna cuando el composable se va
     DisposableEffect(Unit) {
@@ -131,16 +128,16 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
                     )
                 )
             )
-    ){
+    ) {
 
         NavBar(navController)
 
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
 
             Spacer(Modifier.height(80.dp))
 
@@ -163,7 +160,8 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
                 }
             }
 
-            Text(text = "Bienvenido, $usuario!",
+            Text(
+                text = "Bienvenido, $user!",
                 style = TextStyle(
                     fontSize = 34.sp,
                     fontWeight = FontWeight.ExtraBold,
@@ -178,21 +176,28 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
             Spacer(Modifier.height(30.dp))
 
             Column {
-                Button(
-                    onClick = { navController.navigate(Routes.MenuUsuario) },
-                    Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
-                    shape = RoundedCornerShape(25.dp),
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp, pressedElevation = 8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF053900), contentColor = Color.White)
-                ) {
-                    Text(text = "Gestión Usuarios", style = TextStyle(fontSize = 21.sp))
+                if (isAdmin) {
+                    Button(
+                        onClick = { navController.navigate(Routes.MenuUsuario) },
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 35.dp)
+                            .height(52.dp),
+                        shape = RoundedCornerShape(25.dp),
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp, pressedElevation = 8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF053900), contentColor = Color.White)
+                    ) {
+                        Text(text = "Gestión Usuarios", style = TextStyle(fontSize = 21.sp))
+                    }
+                    Spacer(Modifier.height(10.dp))
                 }
-
-                Spacer(Modifier.height(10.dp))
 
                 Button(
                     onClick = { navController.navigate(Routes.MenuProducto) },
-                    Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 35.dp)
+                        .height(52.dp),
                     shape = RoundedCornerShape(25.dp),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp, pressedElevation = 8.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF053900), contentColor = Color.White)
@@ -202,10 +207,12 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
 
                 Spacer(Modifier.height(10.dp))
 
-                // Botón para Gestión de Pedidos (futuro)
                 Button(
                     onClick = { navController.navigate(Routes.MenuPedido) },
-                    Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 35.dp)
+                        .height(52.dp),
                     shape = RoundedCornerShape(25.dp),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp, pressedElevation = 8.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF053900), contentColor = Color.White)
@@ -215,11 +222,12 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
 
                 Spacer(Modifier.height(10.dp))
 
-                Row (
-                    Modifier.fillMaxWidth().padding(horizontal = 35.dp),
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 35.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
-                ){
-                    // Botón para la linterna
+                ) {
                     Button(
                         onClick = {
                             when (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)) {
@@ -227,10 +235,14 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
                                     if (isTorchOn) torch.turnOff() else torch.turnOn()
                                     isTorchOn = !isTorchOn
                                 }
+
                                 else -> launcher.launch(Manifest.permission.CAMERA)
                             }
                         },
-                        Modifier.weight(1f).height(52.dp).padding(end = 8.dp),
+                        Modifier
+                            .weight(1f)
+                            .height(52.dp)
+                            .padding(end = 8.dp),
                         shape = RoundedCornerShape(25.dp),
                         elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp, pressedElevation = 8.dp),
                         colors = ButtonDefaults.buttonColors(
@@ -240,25 +252,7 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
                     ) {
                         Text(text = if (isTorchOn) "Off" else "On", style = TextStyle(fontSize = 21.sp))
                     }
-
-
                 }
-            }
-
-            Spacer(Modifier.height(70.dp))
-
-            Column (
-                Modifier.fillMaxWidth().padding(horizontal = 50.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Contraseña en SHA256:  ",
-                    style = TextStyle(textAlign = TextAlign.Center, fontSize = 22.sp, fontWeight = FontWeight.SemiBold)
-                )
-
-                Spacer(Modifier.height(5.dp))
-
-                Text(text = passwordHashed, fontSize = 17.sp, style = TextStyle(textAlign = TextAlign.Center))
             }
         }
     }
@@ -269,8 +263,7 @@ fun MainMenu(paddingValues: PaddingValues, usuario : String, passwordHashed : St
 fun PreviewMainMenu() {
     MainMenu(
         paddingValues = PaddingValues(),
-        usuario = "Villalobos",
-        passwordHashed = "abc123123abc",
+        user = "Villalobos",
         navController = rememberNavController()
     )
 }

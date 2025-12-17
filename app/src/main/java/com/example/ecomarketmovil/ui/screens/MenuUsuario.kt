@@ -30,13 +30,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.ecomarketmovil.ui.Routes
 
-/*
-La idea sería que acá el usuario pueda administrar usuarios del sistema, creando (redireccionando al register)
-listando usuarios, eliminar usuarios y editar usuarios.
-*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MenuUsuario(paddingValues: PaddingValues,navController : NavController) {
+fun MenuUsuario(paddingValues: PaddingValues, navController: NavController) {
 
     Box(
         modifier = Modifier
@@ -74,14 +70,13 @@ fun MenuUsuario(paddingValues: PaddingValues,navController : NavController) {
 
             Spacer(Modifier.height(30.dp))
 
-            Column(
-
-            ) {
+            Column {
                 Button(
-                    onClick = {
-                        navController.navigate(Routes.FormularioUsuario)
-                    },
-                    Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
+                    onClick = { navController.navigate(Routes.FormularioUsuario) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 35.dp)
+                        .height(52.dp),
                     shape = RoundedCornerShape(25.dp),
                     elevation = ButtonDefaults.buttonElevation(
                         defaultElevation = 4.dp,
@@ -94,19 +89,18 @@ fun MenuUsuario(paddingValues: PaddingValues,navController : NavController) {
                 ) {
                     Text(
                         text = "Agregar nuevo Usuario",
-                        style = TextStyle(
-                            fontSize = 21.sp
-                        )
+                        style = TextStyle(fontSize = 21.sp)
                     )
                 }
 
                 Spacer(Modifier.height(10.dp))
 
                 Button(
-                    onClick = {
-                        navController.navigate(Routes.ListaUsuarios)
-                    },
-                    Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
+                    onClick = { navController.navigate(Routes.ListaUsuarios) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 35.dp)
+                        .height(52.dp),
                     shape = RoundedCornerShape(25.dp),
                     elevation = ButtonDefaults.buttonElevation(
                         defaultElevation = 4.dp,
@@ -119,20 +113,18 @@ fun MenuUsuario(paddingValues: PaddingValues,navController : NavController) {
                 ) {
                     Text(
                         text = "Ver Usuarios existentes",
-                        style = TextStyle(
-                            fontSize = 21.sp
-                        )
+                        style = TextStyle(fontSize = 21.sp)
                     )
                 }
-
 
                 Spacer(Modifier.height(10.dp))
 
                 Button(
-                    onClick = {
-                        navController.navigate(Routes.ListaUsuarios)
-                    },
-                    Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
+                    onClick = { navController.navigate(Routes.ListaUsuarios) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 35.dp)
+                        .height(52.dp),
                     shape = RoundedCornerShape(25.dp),
                     elevation = ButtonDefaults.buttonElevation(
                         defaultElevation = 4.dp,
@@ -145,18 +137,17 @@ fun MenuUsuario(paddingValues: PaddingValues,navController : NavController) {
                 ) {
                     Text(
                         text = "Editar un Usuario",
-                        style = TextStyle(
-                            fontSize = 21.sp
-                        )
+                        style = TextStyle(fontSize = 21.sp)
                     )
                 }
                 Spacer(Modifier.height(10.dp))
 
                 Button(
-                    onClick = {
-                        navController.popBackStack()
-                    },
-                    Modifier.fillMaxWidth().padding(horizontal = 35.dp).height(52.dp),
+                    onClick = { navController.popBackStack() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 35.dp)
+                        .height(52.dp),
                     shape = RoundedCornerShape(25.dp),
                     elevation = ButtonDefaults.buttonElevation(
                         defaultElevation = 4.dp,
@@ -169,19 +160,17 @@ fun MenuUsuario(paddingValues: PaddingValues,navController : NavController) {
                 ) {
                     Text(
                         text = "Volver",
-                        style = TextStyle(
-                            fontSize = 21.sp
-                        )
+                        style = TextStyle(fontSize = 21.sp)
                     )
                 }
             }
         }
     }
-
 }
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewMenuUsuario() {
     val navController = rememberNavController()
-    MenuUsuario(PaddingValues(),navController)
-    }
+    MenuUsuario(PaddingValues(), navController)
+}
