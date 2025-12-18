@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "248167479870",
-    "project_id": "ecomarket-4eab2",
-    "storage_bucket": "ecomarket-4eab2.firebasestorage.app"
+    "project_number": "836847661392",
+    "project_id": "eco-market-b7f96",
+    "storage_bucket": "eco-market-b7f96.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:248167479870:android:dac17e0fffb5cd00a4ef6f",
+        "mobilesdk_app_id": "1:836847661392:android:425ee7442ad35a9902fc55",
         "android_client_info": {
           "package_name": "com.example.ecomarketmovil"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAlfiD361-lwABqcPGgIEay7CblcdKDRSM"
+          "current_key": "AIzaSyChOLlTKWW2dbg_blqTv32hk0vY-VKJFXY"
         }
       ],
       "services": {
