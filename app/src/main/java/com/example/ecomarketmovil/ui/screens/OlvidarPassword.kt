@@ -16,6 +16,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.ecomarketmovil.viewmodels.AuthViewModel
 import kotlinx.coroutines.delay
+import com.example.ecomarketmovil.ui.components.BackIconButton
+
 
 @Composable
 fun OlvidarPassword(
@@ -49,7 +51,7 @@ fun OlvidarPassword(
                 )
             )
     )
-
+    BackIconButton(navController = navController)
     Column(
         modifier = Modifier
             .fillMaxSize()

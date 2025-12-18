@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.ecomarketmovil.ui.Routes
+import com.example.ecomarketmovil.ui.components.BackIconButton
 
 /*
 La idea sería que acá el usuario pueda administrar productos del sistema, creando
@@ -50,6 +51,7 @@ fun MenuProducto(paddingValues: PaddingValues,navController : NavController){
                 )
             )
     ) {
+        BackIconButton(navController = navController)
         Column(
             modifier = Modifier
                 .fillMaxSize()

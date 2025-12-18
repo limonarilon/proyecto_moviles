@@ -15,6 +15,8 @@ import com.example.ecomarketmovil.data.Pedido
 import com.example.ecomarketmovil.data.Producto
 import com.example.ecomarketmovil.ui.Routes
 import com.example.ecomarketmovil.viewmodels.PedidoViewModel
+import com.example.ecomarketmovil.ui.components.BackIconButton
+
 
 @Composable
 fun ListaPedidoScreen(navController: NavController, viewModel: PedidoViewModel) {
@@ -34,6 +36,7 @@ fun ListaPedidoScreen(navController: NavController, viewModel: PedidoViewModel) 
             }
         }
     ) { padding ->
+        BackIconButton(navController = navController)
         Column(
             modifier = Modifier
                 .fillMaxSize()

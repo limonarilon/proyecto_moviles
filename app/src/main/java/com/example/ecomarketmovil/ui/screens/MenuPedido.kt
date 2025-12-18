@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.ecomarketmovil.ui.Routes
+import com.example.ecomarketmovil.ui.components.BackIconButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,6 +47,7 @@ fun MenuPedido(paddingValues: PaddingValues, navController: NavController) {
                 )
             )
     ) {
+        BackIconButton(navController = navController)
         Column(
             modifier = Modifier
                 .fillMaxSize()

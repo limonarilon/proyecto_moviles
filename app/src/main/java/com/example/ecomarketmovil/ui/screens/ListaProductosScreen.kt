@@ -31,6 +31,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.ecomarketmovil.ui.Routes
 import com.example.ecomarketmovil.viewmodels.ProductoViewModel
+import com.example.ecomarketmovil.ui.components.BackIconButton
 
 @Composable
 fun ListaProductosScreen(navController: NavController, viewModel: ProductoViewModel) {
@@ -50,6 +51,7 @@ fun ListaProductosScreen(navController: NavController, viewModel: ProductoViewMo
             }
         }
     ) { padding ->
+        BackIconButton(navController = navController)
         Column(
             modifier = Modifier
                 .fillMaxSize()

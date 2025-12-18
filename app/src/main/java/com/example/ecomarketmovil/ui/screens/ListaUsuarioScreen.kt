@@ -19,15 +19,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.ecomarketmovil.data.UsuarioRespuesta
-
+import com.example.ecomarketmovil.ui.components.BackIconButton
 @Composable
 fun ListaUsuarioScreen(
     usuarios: List<UsuarioRespuesta>,
     onEditar: (UsuarioRespuesta) -> Unit,
-    onEliminar: (UsuarioRespuesta) -> Unit
+    onEliminar: (UsuarioRespuesta) -> Unit,
+    navController: NavHostController
 ) {
-
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) { BackIconButton(navController = navController)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -94,4 +99,5 @@ fun ListaUsuarioScreen(
             }
         }
     }
+}
 }

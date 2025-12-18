@@ -56,6 +56,8 @@ import com.example.ecomarketmovil.R
 import com.example.ecomarketmovil.viewmodels.ProductoViewModel
 import java.time.Instant
 import java.time.ZoneId
+import com.example.ecomarketmovil.ui.components.BackIconButton
+
 
 private const val BASE_IMAGE_URL = "http://10.0.2.2:8080/productos/uploads/"
 
@@ -130,6 +132,7 @@ fun FormProductoScreen(navController: NavController, viewModel: ProductoViewMode
 
 
     Scaffold {
+        BackIconButton(navController = navController)
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -31,6 +31,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.ecomarketmovil.viewmodels.UsuarioViewModel
+import com.example.ecomarketmovil.ui.components.BackIconButton
+
 
 @Composable
 fun FormularioScreen(
@@ -53,6 +55,8 @@ fun FormularioScreen(
     }
 
     Scaffold {
+        BackIconButton(navController = navController)
+
         Column(
             modifier = Modifier
                 .fillMaxSize()

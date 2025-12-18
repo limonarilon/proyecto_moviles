@@ -53,6 +53,7 @@ import com.example.ecomarketmovil.ui.components.NavBar
 import com.example.ecomarketmovil.utils.Torch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import com.example.ecomarketmovil.ui.components.BackIconButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -129,7 +130,6 @@ fun MainMenu(paddingValues: PaddingValues, user: String, navController: NavContr
                 )
             )
     ) {
-
         NavBar(navController)
 
         Column(

@@ -35,6 +35,7 @@ import com.example.ecomarketmovil.data.Producto
 import com.example.ecomarketmovil.viewmodels.PedidoViewModel
 import com.example.ecomarketmovil.viewmodels.ProductoViewModel
 import java.time.LocalDateTime
+import com.example.ecomarketmovil.ui.components.BackIconButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -89,6 +90,8 @@ fun FormPedidoScreen(
     }
 
     Scaffold { paddingValues ->
+        BackIconButton(navController = navController)
+
         Column(
             modifier = Modifier
                 .fillMaxSize()

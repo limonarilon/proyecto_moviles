@@ -107,6 +107,7 @@ class MainActivity : ComponentActivity() {
                         val usuarios by usuarioViewModel.usuariosFiltrados.collectAsState()
                         ListaUsuarioScreen(
                             usuarios = usuarios,
+                            navController = navController,
                             onEditar = { usuario ->
                                 navController.navigate(Routes.FormularioUsuario + "/${usuario.id}")
                             },
