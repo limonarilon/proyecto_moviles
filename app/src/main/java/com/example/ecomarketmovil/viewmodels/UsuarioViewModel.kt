@@ -73,7 +73,7 @@ class UsuarioViewModel(private val repository: UsuarioRepository = UsuarioReposi
                 cargarUsuarios() // Recargar la lista de usuarios
                 _navegacionExitosa.value = true
             }.onFailure {
-                _mensajeError.value = "Error al guardar: ${it.message}"
+                _mensajeError.value = it.message
             }
         }
     }

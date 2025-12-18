@@ -138,9 +138,3 @@ fun FormularioScreen(
         }
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewFormularioScreen() {
-    FormularioScreen(navController = rememberNavController())
-}

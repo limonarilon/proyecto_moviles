@@ -125,26 +125,30 @@ fun FormUsuarioScreen(navController: NavController, viewModel: UsuarioViewModel,
             Spacer(modifier = Modifier.height(16.dp))
 
             // Selección de Rol con RadioButtons
-            val roles = listOf("USER", "ADMIN")
+            val roles = listOf("USER", "ADMIN", "GERENTE", "LOGISTICA")
             Text("Rol", style = MaterialTheme.typography.titleMedium)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                roles.forEach { roleValue ->
+            Column(Modifier.fillMaxWidth()) {
+                roles.chunked(2).forEach { rowRoles ->
                     Row(
-                        modifier = Modifier.clickable { rol = roleValue },
-                        verticalAlignment = Alignment.CenterVertically
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        RadioButton(
-                            selected = (rol == roleValue),
-                            onClick = { rol = roleValue }
-                        )
-                        Text(
-                            text = roleValue,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(start = 4.dp)
-                        )
+                        rowRoles.forEach { roleValue ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.clickable { rol = roleValue }
+                            ) {
+                                RadioButton(
+                                    selected = (rol == roleValue),
+                                    onClick = { rol = roleValue }
+                                )
+                                Text(
+                                    text = roleValue,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.padding(start = 4.dp)
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -180,11 +184,4 @@ fun FormUsuarioScreen(navController: NavController, viewModel: UsuarioViewModel,
             }
         }
     }
-}
-
-@Composable
-fun PreviewFormUsuario() {
-    val navController = rememberNavController()
-    val viewModel = UsuarioViewModel()
-    FormUsuarioScreen(navController, viewModel, null)
 }

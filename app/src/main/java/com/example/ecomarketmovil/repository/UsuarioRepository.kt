@@ -3,6 +3,8 @@ package com.example.ecomarketmovil.repository
 import com.example.ecomarketmovil.data.UsuarioRegistro
 import com.example.ecomarketmovil.data.UsuarioRespuesta
 import com.example.ecomarketmovil.remote.UsuarioApiService
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class UsuarioRepository(private val apiService: UsuarioApiService) {
 
@@ -38,7 +40,20 @@ class UsuarioRepository(private val apiService: UsuarioApiService) {
             if (response.isSuccessful) {
                 Result.success(response.body()!!)
             } else {
-                Result.failure(Exception("Error al crear usuario: ${response.code()}"))
+                val errorBody = response.errorBody()?.string()
+                val errorMessage = if (errorBody != null) {
+                    try {
+                        val type = object : TypeToken<Map<String, Any>>() {}.type
+                        val errorMap: Map<String, Any> = Gson().fromJson(errorBody, type)
+                        // Corregido: buscar la clave "error" en lugar de "message"
+                        errorMap["error"] as? String ?: "Error al crear usuario: ${response.code()}"
+                    } catch (e: Exception) {
+                        "Error al procesar la respuesta de error: ${response.code()}"
+                    }
+                } else {
+                    "Error al crear usuario: ${response.code()}"
+                }
+                Result.failure(Exception(errorMessage))
             }
         } catch (e: Exception) {
             Result.failure(e)
